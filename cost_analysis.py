@@ -9,54 +9,90 @@ K = 4 # Konsumen
 L = 2 # Pengumpulan
 M = 2 # Pembuangan
 
-# BIAYA PEMANUFAKTUR
+## DATA COLLECTION
+# Kuantitas dan Kapasitas
+Dk =  [100000, 110000, 120000, 130000]  # --> Demand Produk 
+Cppi = [135000, 140000, 145000, 150000] # --> Kapasitas Maksimal Produksi Manufaktur
+Cri = [88000, 90000, 91000, 92000]      #--> Kapasitas Maksimal Remanufaktur
+CPdj = [50000, 53000, 56000, 60000]     #--> Kapasitas Maksimal Distributor
+Cccl = [70000, 85000, 90000, 95000]     #--> Kapasitas Maksimal Pusat Pengumpulan
+Cccdm = [80000, 90000, 95000, 100000]   #--> Kapasitas Maksimal Pusat Pembuangan
 
-## PRODUCTION COST
-# 1. Biaya
-# production cost = Cpi/PCi
-Cpi = [12.5, 15.0, 17.5, 19.5] # -> Asumsi Cpi = PCi
+# Fixed Cost
+fcl = [400000, 440000, 480000, 500000]  #--> Biaya Pendirian Fasilitas Pengumpulan
+fbm = [300000, 320000, 340000, 350000]  #--> Biaya Pendirian Fasilitas Pembuangan
 
-# 2. Jumlah yang diproduksi dan dikirimkan
-production_delivery_quantity = [100000, 110000, 120000, 130000] #Qpij = Dk -> Jumlah yang diproduksi = yang Dikirim = Permintaan 
+# Variable Cost
+Coj = [5, 6, 7, 8]          #--> Biaya Penanganan Produk di Distributor 
+Ccl = [13, 14, 15, 17]      #--> Biaya Pemilahan Produk di Pengumpulan
+Crei = [8, 9, 10, 13]       #--> Biaya Remanufaktur di Pemanufaktur
+Cdl = [10, 11, 12, 14]      #--> Biaya Pemusnahan di Pembuangan
 
-### PERHITUNGAN PRODUCTION COST
-perhitungan_production_cost = [Cpi[i]*production_delivery_quantity[i] for i in range(4)]
-print(perhitungan_production_cost)
+PCi = [12.5, 15.0, 17.5, 19.5]
 
-## REMANUFACTURE COST
-# 1. Biaya 
-remanufacture_cost = [8, 10, 12, 13]
-
-# 2. Jumlah yang diremanufaktur
-# -> Harus tau Qjk dan Qkl. Qli = (1-Fd) * Qkl
-
-### PERHITUNGAN REMANUFACTURE COST
-perhitungan_remanufacture_cost = []
-
-
-## DELIVERY COST MANUFACTURE -> DISTRIBUTOR
-# 1. Biaya per Kendaraan
-cost_vehicle_per_distance = {
+# Delivery Cost (Vehicle Based)
+Cdv = {
     "Truck (Hybrid Motor)": [13,14],
     "Truck with Petrol" : [9,10],
     "Trailer (Hybrid Motor)": [6,7],
     "Trailer with Petrol" : [4,5]
 }
 
+Cdv_keys = Cdv.keys()
 
-# 2. Jarak 
-distance_i_j = [150, 200, 300, 500]
-distance_j_k = [100, 150, 200, 350]
-distance_k_l = [90, 95, 97, 100]
-distance_l_m = [200, 300, 400, 650]
-distance_m_n = [250, 500, 600, 750]
+# Distance
+dij = [150, 200, 300, 500]  #--> Distance Pemanufaktur (i) ke Distributor (j)
+djk = [100, 150, 200, 350]  #--> Distance Distributor (j) ke Konsumen (k)
+dkl = [90, 95, 97, 100]     #--> Distance Konsumen (k) ke Pengumpulan (l)
+dli = [200, 300, 400, 650]  #--> Distance Pengumpulan (l) ke Pemanufaktur (i)
+dlm = [250, 500, 600, 750]  #--> Distance Pengumpulan (l) ke Pembuangan (m)
+
+# Faktor-Faktor Biner
+GLti = [0, 1, 0, 1]         #--> Produksi Green Produk atau Tidak (1,0)
+
+# Faktor-Faktor Pendukung Lain
+B = [0.1, 0.2, 0.25, 0.3]   #--> Faktor Biaya Produksi Green
+Pngi = [50, 52, 54, 55]     #--> Harga Produk Non-Green
+Png = 55                    #--> Maksimum Harga Produk Non-Green
+Fd = 0.5                    #--> Proporsi Produk Bekas Pakai Yang Dibuang
+q = [0.3, 0.4, 0.45 ,0.5]   #--> Tingkat Penerimaan Kualitas Produk Bekas Pakai (Menghitung Yk)
+
+# BIAYA PEMANUFAKTUR (1)
+
+## PRODUCTION COST
+# 1. Biaya Produksi (Cpi)
+Cpi = [PCi[item] + B[item] * GLti[item] for item in range(4)] #--> Cpi = PCi x Faktor Green
+
+# 2. Jumlah yang diproduksi dan dikirimkan (QPij)
+QPij = [Dk[item] * 0.8 for item in range(4)] #QPij = Dk x Proporsi
+
+# print(QPij)
+
+### PERHITUNGAN PRODUCTION COST
+production_cost = [Cpi[i]*QPij[i] for i in range(4)]
+print(production_cost)
+
+## DELIVERY COST MANUFACTURE -> DISTRIBUTOR
+# 1. Biaya per Kendaraan (cdv)
+
+# 2. Jarak (dij)
+
+### PERHITUNGAN DELIVERY COST
+delivery_cost = [Cdv[i]*dij[i] for i in range(4)]
 
 # 3. Jumlah Produk Yang Dikirimkan Dari Pemanufaktur ke Distributor 
 # Pakai Jumlah yang diproduksi
 
 ### PERHITUNGAN DELIVERY COST
-perhitungan_delivery_cost = [distance_i_j[i]*production_delivery_quantity[i] for i in range(4)]
+perhitungan_delivery_cost = [dij[i]*production_delivery_quantity[i] for i in range(4)]
 
+## REMANUFACTURE COST (Crei x Qrli)
+# 1. Biaya Remanufaktur (Crei)
+
+# 2. Jumlah yang diremanufaktur (Qrli)
+
+### PERHITUNGAN REMANUFACTURE COST
+perhitungan_remanufacture_cost = [Crei[i]*Qrli[i] for i in range(4)]
 
 ## DISCOUNT COST
 # 1. Biaya
@@ -76,6 +112,10 @@ perhitungan_discount_cost = [discount_cost[i]*return_product_quantity[i]*dd[i] f
 problem = lp.LpProblem("Cost_Minimization", lp.LpMinimize)
 
 #DECISION VARIABLES
+Dk = lp.LpVariable("Demand", 0, None)
+QPij = lp.LpVariable("Jumlah Produksi", 0, None, lp.LpInteger)
+
+
 # Biaya Produksi
 biaya_produksi = lp.LpVariable.dicts("Biaya_Produksi", perhitungan_production_cost, 0, None, lp.LpContinuous)
 
@@ -108,7 +148,7 @@ M = PEMBUANGAN (m)
 #CONSTRAINT MODEL
 # 1. QPij >= Dk  
 # Jumlah Produk yang Diproduksi Pemanufaktur >= Demand Produk
-
+problem += QPij >= Dk
 
 
 # 2. QDjk <= QPij
@@ -206,7 +246,11 @@ print("Total Biaya =", lp.value(problem.objective))
 
 #LIST PERTANYAAN
 '''
-1. APAKAH Cpi = PCi? -> Ada Rumusnya Di Constraint
-2. APAKAH KUANTITAS YANG DIPRODUKSI = KAPASITAS PRODUKSI?
-3.
+1. Rumus be^-φq serta masing-masing variable itu apa?
+2. Proporsi Untuk Masing-Masing Perpindahan itu Berapa?
+3. Jumlah Tempat Manufaktur, Distributor, Konsumen dst itu kan berbagai macam.
+   Sedangkan Datanya berbentuk Distribusi, Contohnya Jarak. Nah itu nanti untuk Jumlah Tempatnya
+   akan Berpengaruh ke perhitungan atau mengikuti distribusi saja?
+4. GLti perhitungan faktor binernya seperti apa? Apakah 1 objek diasumsikan memiliki satu faktor biner
+   (A : 1, B : 0 dst) atau satu faktor disimulasikan 2 kali? (A:0, A:1, B:0, B:2)
 '''
