@@ -49,6 +49,10 @@ Biaya_Pemanufaktur=0
 Biaya_Distribusi = biaya_penanganan_produk + biaya_pengiriman_konsumen
 Biaya_Pengumpulan = 0
 Biaya_Pembuangan = biaya_pendirian_buang + biaya_proses_pemusnahan 
+# Constraint
+problem += lp.lpSum(produk_from_manufaktur[item] for item in jenis_prod) >= lp.lpSum(banyak_demand[item] for item in jenis_prod),"Qpij >= Dk"
+
+problem+= lp.lpSum(biaya_pengiriman_konsumen[item] for item in konsumen) <= lp.lpSum(produk_from_manufaktur[item] for item in jenis_prod)
 
 problem += lp.lpSum(Biaya_Pemanufaktur + Biaya_Distribusi + Biaya_Pengumpulan + Biaya_Pembuangan)
 
