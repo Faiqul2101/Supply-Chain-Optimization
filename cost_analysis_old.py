@@ -270,7 +270,5 @@ print("Total Biaya =", lp.value(problem.objective))
 3. Jumlah Tempat Manufaktur, Distributor, Konsumen dst itu kan berbagai macam.
    Sedangkan Datanya berbentuk Distribusi, Contohnya Jarak. Nah itu nanti untuk Jumlah Tempatnya
    akan Berpengaruh ke perhitungan atau mengikuti distribusi saja?
-4. GLti perhitungan faktor binernya seperti apa? Apakah 1 objek diasumsikan memiliki satu faktor biner
-   (A : 1, B : 0 dst) atau satu faktor disimulasikan 2 kali? (A:0, A:1, B:0, B:2)
-5. Dd (Penawaran Diskon) datanya didapat darimana?
+4. Dd (Penawaran Diskon) datanya didapat darimana?
 '''
