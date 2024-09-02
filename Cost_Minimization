@@ -1,0 +1,8 @@
+\* Cost_Minimization *\
+Minimize
+OBJ: Biaya_Diskon + Biaya_Pembangunan_Fasilitas_L
+ + Biaya_Pembangunan_Fasilitas_M + Biaya_Pembuangan + Biaya_Pemilahan
+ + Biaya_Penanganan + Biaya_Pengiriman_ij + Biaya_Pengiriman_jk
+ + Biaya_Pengiriman_li + Biaya_Pengiriman_lm + Biaya_Remanufacture
+Subject To
+End

@@ -1,5 +1,5 @@
 #Stakeholder
-I = 2 # Pemanufaktur
+I = 1 # Pemanufaktur
 J = 2 # Distributor
 K = 4 # Konsumen
 M = 2 # Pengumpulan
