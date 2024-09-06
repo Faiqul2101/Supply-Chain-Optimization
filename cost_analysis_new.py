@@ -7,9 +7,9 @@ Cdv = { # Asumsi Trailer Petrol dan Truck Petrol
         "i1 ke j1" : 4,
         "i1 ke j2" : 5,
         "i2 ke j1" : 4,
-        "i2 ke j2" : 4,
+        "i2 ke j2" : 5,
     },
-    
+
     "jk" : {
         "j1 ke K1" : 9,
         "j1 ke K2" : 10,
@@ -183,12 +183,24 @@ Dk = {
     "Konsumen 4" : 130000
 }
 
+# Kumpulan Keys
 manuf_keys = PCi.keys()
 distributor_keys = Coj.keys()
 konsumen_keys = Dk.keys()
 collector_keys = Cccl.keys()
 disposer_keys = Ccdm.keys()
-problem = lp.LpProblem("Supply_Chain_Optimization", lp.LpMinimize)\
+Cdv_ij = Cdv["ij"].keys()
+Cdv_jk = Cdv["jk"].keys()
+Cdv_li = Cdv["li"].keys()
+Cdv_lm = Cdv["lm"].keys()
+d_ij = d["ij"].keys()
+d_jk = d["jk"].keys()
+d_kl = d["kl"].keys()
+d_li = d["li"].keys()
+d_lm = d["lm"].keys()
+
+# Model Problem
+problem = lp.LpProblem("Supply_Chain_Optimization", lp.LpMinimize)
 
 # Variabel Manufaktur
 QMi = lp.LpVariable.dicts("jumlah_produksi_manuf", manuf_keys, 0,None,cat=lp.LpInteger)
@@ -210,41 +222,72 @@ Ul = lp.LpVariable.dicts("parameter_bangun_collector", collector_keys, 0,1,cat=l
 Vm = lp.LpVariable.dicts("parameter_bangun_disposer", disposer_keys, 0,1,cat=lp.LpBinary)
 Qslm =  lp.LpVariable.dicts("produk_dibuang",disposer_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
+# KALKULASI BIAYA
+
 # Kalkulasi Biaya Manufaktur Cpi = PCi + Beta * GLti
 for item1 in manuf_keys :
     for item2 in manuf_keys:
         for item3 in manuf_keys: 
             if GLti[item1] != 0 : 
-                biaya_produksi = lp.lpSum((PCi[item1] + Beta[item2]) * QMi[item3]) #QMi harus ditambahkan batasan Qrli dan Qpij
-                print("BP1")
-                print(biaya_produksi)
+                biaya_produksi = lp.lpSum((PCi[item1] + Beta[item2]) * QMi[item3]) 
             if GLti[item1] == 0 : 
-                biaya_produksi = lp.lpSum(PCi[item1] * QMi[item3]) #QMi harus ditambahkan batasan Qrli dan Qpij
-                print("BP2")
-                print(biaya_produksi)
+                biaya_produksi = lp.lpSum(PCi[item1] * QMi[item3]) 
 
-# Kalkulasi Biaya Remanufaktur, Cre * QRli
+# Kalkulasi Biaya Remanufaktur, Cre * QRli --> Ngga Pengaruh Ke Total Biaya
 for item1 in manuf_keys:
     for item2 in manuf_keys: 
         biaya_remanufaktur = lp.lpSum(Cre[item1] * Qrli[item2])
-        print("BR")
-        print(biaya_remanufaktur)
 
-for item in distributor_keys :
-    for item2 in konsumen_keys :
-        biaya_penanganan = lp.lpSum(Coj[item] * Qdjk[item2])
-        print("BPen")
-        print(biaya_penanganan)
-        
-# Kalkulasi Biaya 
+# Kalkulasi Biaya Pengiriman I ke J --> Belum Dibagi Kapasitas Cvr atau Cvt --> Pengaruh ke Total Biaya
+for item in Cdv_ij :
+    for item2 in distributor_keys :
+        for item3 in d_ij :
+            biaya_pengiriman_i_j = Cdv["ij"][item] * QPij[item2] * d["ij"][item3]
+
+# Kalkulasi Biaya Diskon Qrli * Pd * Dd --> Ini gabisa di eksekusi karena Qrli dan Pd merupakan variable tidak konstan
+# for item1 in manuf_keys :
+#     for item2 in manuf_keys :
+#         for item3 in manuf_keys :
+#             biaya_diskon = lp.lpSum(Qrli[item1]*dd[item3]*Pd[item2])
+
+# Kalkulasi Biaya Penanganan di Distributor Coj * Qdjk --> Ngga Pengaruh Ke Total Biaya
+# for item in distributor_keys :
+#     for item2 in konsumen_keys :
+#         biaya_penanganan = lp.lpSum(Coj[item] * Qdjk[item2])
+
+# Kalkulasi Biaya Pengiriman J ke K --> Belum Dibagi Kapasitas Cvr atau Cvt --> Ngga Pengaruh Ke Total Biaya
+# for item in Cdv_jk :
+#     for item2 in konsumen_keys :
+#         for item3 in d_jk :
+#             biaya_pengiriman_j_k = Cdv["jk"][item] * Qdjk[item2] * d["jk"][item3]
+
+# Kalkulasi Fixed Cost Capacity Collector Fcl Ul --> Ngga Pengaruh Ke Total Biaya
+# for item in collector_keys :
+#     for item2 in collector_keys :
+#         if Ul[item2] != 0 :
+#             fixed_cost_collector = lp.lpSum(Fcl[item]) * 1
+#         if Ul[item2] == 0 :
+#             fixed_cost_collector = 0
+
+# Kalkulasi Biaya Pemilahan Ccl Rkl --> Ngga Pengaruh Ke Total Biaya
+for item in collector_keys :
+    for item2 in collector_keys :
+        biaya_pemilahan = lp.lpSum(Ccl[item] * Rkl[item2])
+
+# Fungsi Tujuan
+problem += lp.lpSum(biaya_produksi + biaya_remanufaktur + biaya_pengiriman_i_j)
+
 # Constraint
+#QPij >= Dk --> Aman
 for item1 in distributor_keys :
     for item2 in konsumen_keys :
         problem += lp.lpSum(QPij[item1]) >= lp.lpSum(Dk[item2])
 
+#QMi + QRli == QPij --> Yang Terpilih QRli = 0
 for item1 in manuf_keys :
-    for item2 in distributor_keys:
-        problem += lp.lpSum(QMi[item1]) + lp.lpSum(Qrli[item1]) == lp.lpSum(QPij[item2])
+    for item2 in manuf_keys : 
+        for item3 in distributor_keys:
+            problem += lp.lpSum(QMi[item1]) + lp.lpSum(Qrli[item2]) == lp.lpSum(QPij[item3])
 
 #Qdjk <= QPij
 for item in konsumen_keys:
@@ -266,7 +309,7 @@ for item in collector_keys:
     for item2 in konsumen_keys:
         for item3 in manuf_keys :
             if GLti[item3] != 0 :
-                problem += lp.lpSum(Rkl[item]) <= lp.lpSum(Qdjk[item2])
+                problem += 0.9 * lp.lpSum(Rkl[item]) <= lp.lpSum(Qdjk[item2])
             if GLti[item3] == 0 :
                 problem += lp.lpSum(Rkl[item]) == 0
                 
@@ -311,19 +354,24 @@ for item in manuf_keys :
     for item2 in manuf_keys:
         problem += lp.lpSum(Pd[item]) <= lp.lpSum(Png[item2])
 
-# print(problem)
+# #Dummy QRli
+# for item in manuf_keys:
+#     problem += lp.lpSum(Qrli[item]) >= 100
 
-print("==========================")
-# print(biaya_produksi)
-print("==========================")
-# print(biaya_remanufaktur)
-
-problem += lp.lpSum(biaya_produksi + biaya_remanufaktur + biaya_penanganan)
+print("=================================")
+print("Biaya Produksi : ", biaya_produksi)
+# print("Biaya Remanufaktur : ", biaya_remanufaktur)
+print("Biaya Pengiriman I ke J : ", biaya_pengiriman_i_j)
+# print("Biaya Diskon : ", biaya_diskon)
+# print("Biaya Penanganan : ", biaya_penanganan)
+# print("Biaya Pengiriman J ke K : ", biaya_pengiriman_j_k)
+# print("Biaya Fixed Cost Collector : ", fixed_cost_collector)
+# print("Biaya Pemilahan: ", biaya_pemilahan)
+print("=================================")
 
 problem.writeLP("Cost_Minimization")
 problem.solve()
 print("Status:", lp.LpStatus[problem.status])
-
 
 status = problem.solve()
 print(lp.LpStatus[status])
