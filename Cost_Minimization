@@ -1,8 +1,57 @@
-\* Cost_Minimization *\
+\* Supply_Chain_Optimization *\
 Minimize
-OBJ: Biaya_Diskon + Biaya_Pembangunan_Fasilitas_L
- + Biaya_Pembangunan_Fasilitas_M + Biaya_Pembuangan + Biaya_Pemilahan
- + Biaya_Penanganan + Biaya_Pengiriman_ij + Biaya_Pengiriman_jk
- + Biaya_Pengiriman_li + Biaya_Pengiriman_lm + Biaya_Remanufacture
+OBJ: 19.5 jumlah_produksi_manuf_Manufaktur_2
 Subject To
+_C1: jumlah_produk_dikirim_ke_distributor_Manufaktur_1 >= 100000
+_C10: - jumlah_produk_dikirim_ke_distributor_Manufaktur_2
+ + jumlah_produk_remanufaktur_Manufaktur_2
+ + jumlah_produksi_manuf_Manufaktur_2 = 0
+_C11: - jumlah_produk_dikirim_ke_distributor_Manufaktur_1
+ + produk_to_konsum_Konsumen_1 <= 0
+_C12: - jumlah_produk_dikirim_ke_distributor_Manufaktur_2
+ + produk_to_konsum_Konsumen_1 <= 0
+_C13: - jumlah_produk_dikirim_ke_distributor_Manufaktur_1
+ + produk_to_konsum_Konsumen_2 <= 0
+_C14: - jumlah_produk_dikirim_ke_distributor_Manufaktur_2
+ + produk_to_konsum_Konsumen_2 <= 0
+_C15: - jumlah_produk_dikirim_ke_distributor_Manufaktur_1
+ + produk_to_konsum_Konsumen_3 <= 0
+_C16: - jumlah_produk_dikirim_ke_distributor_Manufaktur_2
+ + produk_to_konsum_Konsumen_3 <= 0
+_C17: - jumlah_produk_dikirim_ke_distributor_Manufaktur_1
+ + produk_to_konsum_Konsumen_4 <= 0
+_C18: - jumlah_produk_dikirim_ke_distributor_Manufaktur_2
+ + produk_to_konsum_Konsumen_4 <= 0
+_C2: jumlah_produk_dikirim_ke_distributor_Manufaktur_1 >= 110000
+_C3: jumlah_produk_dikirim_ke_distributor_Manufaktur_1 >= 120000
+_C4: jumlah_produk_dikirim_ke_distributor_Manufaktur_1 >= 130000
+_C5: jumlah_produk_dikirim_ke_distributor_Manufaktur_2 >= 100000
+_C6: jumlah_produk_dikirim_ke_distributor_Manufaktur_2 >= 110000
+_C7: jumlah_produk_dikirim_ke_distributor_Manufaktur_2 >= 120000
+_C8: jumlah_produk_dikirim_ke_distributor_Manufaktur_2 >= 130000
+_C9: - jumlah_produk_dikirim_ke_distributor_Manufaktur_1
+ + jumlah_produk_remanufaktur_Manufaktur_1
+ + jumlah_produksi_manuf_Manufaktur_1 = 0
+Bounds
+ 0 <= jumlah_produk_dikirim_ke_distributor_Manufaktur_1
+ 0 <= jumlah_produk_dikirim_ke_distributor_Manufaktur_2
+ 0 <= jumlah_produk_remanufaktur_Manufaktur_1
+ 0 <= jumlah_produk_remanufaktur_Manufaktur_2
+ 0 <= jumlah_produksi_manuf_Manufaktur_1
+ 0 <= jumlah_produksi_manuf_Manufaktur_2
+ 0 <= produk_to_konsum_Konsumen_1
+ 0 <= produk_to_konsum_Konsumen_2
+ 0 <= produk_to_konsum_Konsumen_3
+ 0 <= produk_to_konsum_Konsumen_4
+Generals
+jumlah_produk_dikirim_ke_distributor_Manufaktur_1
+jumlah_produk_dikirim_ke_distributor_Manufaktur_2
+jumlah_produk_remanufaktur_Manufaktur_1
+jumlah_produk_remanufaktur_Manufaktur_2
+jumlah_produksi_manuf_Manufaktur_1
+jumlah_produksi_manuf_Manufaktur_2
+produk_to_konsum_Konsumen_1
+produk_to_konsum_Konsumen_2
+produk_to_konsum_Konsumen_3
+produk_to_konsum_Konsumen_4
 End

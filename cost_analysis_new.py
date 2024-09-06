@@ -87,7 +87,7 @@ PCi = {
     "Manufaktur 1" : 12.5,
     "Manufaktur 2" : 19.5
 }
-manuf_keys = PCi.keys()
+
 Cre = {
     "Manufaktur 1" : 8,
     "Manufaktur 2" : 13
@@ -183,16 +183,19 @@ Dk = {
     "Konsumen 4" : 130000
 }
 
+manuf_keys = PCi.keys()
 konsumen_keys = Dk.keys()
 collector_keys = Cccl.keys()
 disposer_keys = Ccdm.keys()
-problem = lp.LpProblem("Supply Chain Optimization", lp.LpMinimize)\
+problem = lp.LpProblem("Supply_Chain_Optimization", lp.LpMinimize)\
 
 # Variabel Manufaktur
-Qpij = lp.LpVariable.dicts("jumlah_produksi_manuf", manuf_keys, 0,None,cat=lp.LpInteger)
-Pd = lp.LpVariable.dicts("penawaran_diskon", manuf_keys, 0,None,cat=lp.LpInteger)
+QMi = lp.LpVariable.dicts("jumlah_produksi_manuf", manuf_keys, 0,None,cat=lp.LpInteger)
 Qrli = lp.LpVariable.dicts("jumlah_produk_remanufaktur", manuf_keys, 0,None,cat=lp.LpInteger)
-GLti = lp.LpVariable.dicts("parameter_ramah", manuf_keys, 0,1,cat=lp.LpBinary)
+QPij = lp.LpVariable.dicts("jumlah_produk_dikirim_ke_distributor", manuf_keys, 0,None,cat=lp.LpInteger)
+Pd = lp.LpVariable.dicts("penawaran_diskon", manuf_keys, 0,None,cat=lp.LpInteger)
+GLti = lp.LpVariable.dicts("parameter_ramah", manuf_keys, 0, 1,cat=lp.LpInteger)
+
 # Variabel Distributor
 Qdjk = lp.LpVariable.dicts("produk_to_konsum",konsumen_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
@@ -204,4 +207,83 @@ Ul = lp.LpVariable.dicts("parameter_bangun_collector", collector_keys, 0,1,cat=l
 
 # Variabel Disposer
 Vm = lp.LpVariable.dicts("parameter_bangun_disposer", disposer_keys, 0,1,cat=lp.LpBinary)
-Qslm =  lp.LpVariable.dicts("produk_dibuang",manuf_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+Qslm =  lp.LpVariable.dicts("produk_dibuang",disposer_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+
+# Cpi = PCi + Beta * GLti
+
+# Kalkulasi Biaya Manufaktur
+# Cpi = lp.lpSum(PCi[item] + Beta[item] * GLti for item in manuf_keys) 
+
+for item1 in manuf_keys : 
+    if GLti[item1] != 0 : 
+        biaya_produksi = lp.lpSum((PCi[item1] + Beta[item1]) * QMi[item1]) #QMi harus ditambahkan batasan Qrli dan Qpij
+        print("BP1")
+        print(biaya_produksi)
+    if GLti[item1] == 0 : 
+        biaya_produksi = lp.lpSum(PCi[item1] * QMi[item1]) #QMi harus ditambahkan batasan Qrli dan Qpij
+        print("BP2")
+        print(biaya_produksi)
+
+
+# Constraint
+for item1 in manuf_keys :
+    for item2 in konsumen_keys :
+        problem += lp.lpSum(QPij[item1]) >= lp.lpSum(Dk[item2])
+
+for item1 in manuf_keys :
+    for item2 in manuf_keys:
+        problem += lp.lpSum(QMi[item1]) + lp.lpSum(Qrli[item2]) == lp.lpSum(QPij[item1])
+
+#Qdjk <= QPij
+for item in konsumen_keys:
+    for item2 in manuf_keys:
+        problem += lp.lpSum(Qdjk[item]) <= lp.lpSum(QPij[item2])
+
+#QRli <= (1-Fd) Rkl
+for item in manuf_keys :
+    for item2 in collector_keys:
+        problem += lp.lpSum(Qrli[item]) <= (1-0.5) * lp.lpSum(Rkl[item2])
+
+#QSlm == Fd Rkl
+for item in disposer_keys :
+    for item2 in collector_keys :
+        problem += lp.lpSum(Qslm[item]) == 0.5 * lp.lpSum(Rkl[item2])
+
+#Rkl <= Yk QDjk GLti
+
+#QRli <= Qpij
+for item in manuf_keys:
+    for item2 in manuf_keys:
+        problem += lp.lpSum(Qrli[item]) <= lp.lpSum(QPij[item2])
+
+#QMi <= Cppi
+for item in manuf_keys :
+    for item2 in manuf_keys:
+        problem += lp.lpSum(QMi[item]) <= lp.lpSum(Cppi[item2])
+
+#Qdjk <= Cpdj
+for item in konsumen_keys:
+    # for item2 in 
+    pass
+print(problem)
+
+print("==========================")
+print(biaya_produksi)
+print("==========================")
+
+# problem += lp.lpSum(biaya_produksi)
+
+# problem.writeLP("Cost_Minimization")
+# problem.solve()
+# print("Status:", lp.LpStatus[problem.status])
+
+
+# status = problem.solve()
+# print(lp.LpStatus[status])
+
+# for v in problem.variables():
+#     print(v.name, "=", v.varValue)
+
+# print("Total Biaya =", lp.value(problem.objective))
+
+# print(problem)
