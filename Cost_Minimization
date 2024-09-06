@@ -1,132 +1,146 @@
 \* Supply_Chain_Optimization *\
 Minimize
-OBJ: 13 jumlah_produk_remanufaktur_Manufaktur_2
- + 19.5 jumlah_produksi_manuf_Manufaktur_2 + 8 produk_to_konsum_Konsumen_4
+OBJ: 2500 jumlah_produk_dikirim_ke_distributor_Distributor_2
+ + 13 jumlah_produk_remanufaktur_Manufaktur_2
+ + 19.5 jumlah_produksi_manuf_Manufaktur_2
+ + 17 konsumen_to_collector_Collector_2
 Subject To
 _C1: jumlah_produk_dikirim_ke_distributor_Distributor_1 >= 100000
 _C10: - jumlah_produk_dikirim_ke_distributor_Distributor_2
  + jumlah_produk_remanufaktur_Manufaktur_1
  + jumlah_produksi_manuf_Manufaktur_1 = 0
-_C100: penawaran_diskon_Manufaktur_2 <= 55
+_C100: produk_dibuang_Disposer_2 = 0
+_C101: penawaran_diskon_Manufaktur_1 <= 50
+_C102: penawaran_diskon_Manufaktur_1 <= 55
+_C103: penawaran_diskon_Manufaktur_2 <= 50
+_C104: penawaran_diskon_Manufaktur_2 <= 55
 _C11: - jumlah_produk_dikirim_ke_distributor_Distributor_1
  + jumlah_produk_remanufaktur_Manufaktur_2
- + jumlah_produksi_manuf_Manufaktur_2 = 0
+ + jumlah_produksi_manuf_Manufaktur_1 = 0
 _C12: - jumlah_produk_dikirim_ke_distributor_Distributor_2
  + jumlah_produk_remanufaktur_Manufaktur_2
- + jumlah_produksi_manuf_Manufaktur_2 = 0
+ + jumlah_produksi_manuf_Manufaktur_1 = 0
 _C13: - jumlah_produk_dikirim_ke_distributor_Distributor_1
- + produk_to_konsum_Konsumen_1 <= 0
+ + jumlah_produk_remanufaktur_Manufaktur_1
+ + jumlah_produksi_manuf_Manufaktur_2 = 0
 _C14: - jumlah_produk_dikirim_ke_distributor_Distributor_2
- + produk_to_konsum_Konsumen_1 <= 0
+ + jumlah_produk_remanufaktur_Manufaktur_1
+ + jumlah_produksi_manuf_Manufaktur_2 = 0
 _C15: - jumlah_produk_dikirim_ke_distributor_Distributor_1
- + produk_to_konsum_Konsumen_2 <= 0
+ + jumlah_produk_remanufaktur_Manufaktur_2
+ + jumlah_produksi_manuf_Manufaktur_2 = 0
 _C16: - jumlah_produk_dikirim_ke_distributor_Distributor_2
- + produk_to_konsum_Konsumen_2 <= 0
+ + jumlah_produk_remanufaktur_Manufaktur_2
+ + jumlah_produksi_manuf_Manufaktur_2 = 0
 _C17: - jumlah_produk_dikirim_ke_distributor_Distributor_1
- + produk_to_konsum_Konsumen_3 <= 0
+ + produk_to_konsum_Konsumen_1 <= 0
 _C18: - jumlah_produk_dikirim_ke_distributor_Distributor_2
- + produk_to_konsum_Konsumen_3 <= 0
+ + produk_to_konsum_Konsumen_1 <= 0
 _C19: - jumlah_produk_dikirim_ke_distributor_Distributor_1
- + produk_to_konsum_Konsumen_4 <= 0
+ + produk_to_konsum_Konsumen_2 <= 0
 _C2: jumlah_produk_dikirim_ke_distributor_Distributor_1 >= 110000
 _C20: - jumlah_produk_dikirim_ke_distributor_Distributor_2
+ + produk_to_konsum_Konsumen_2 <= 0
+_C21: - jumlah_produk_dikirim_ke_distributor_Distributor_1
+ + produk_to_konsum_Konsumen_3 <= 0
+_C22: - jumlah_produk_dikirim_ke_distributor_Distributor_2
+ + produk_to_konsum_Konsumen_3 <= 0
+_C23: - jumlah_produk_dikirim_ke_distributor_Distributor_1
  + produk_to_konsum_Konsumen_4 <= 0
-_C21: jumlah_produk_remanufaktur_Manufaktur_1
+_C24: - jumlah_produk_dikirim_ke_distributor_Distributor_2
+ + produk_to_konsum_Konsumen_4 <= 0
+_C25: jumlah_produk_remanufaktur_Manufaktur_1
  - 0.5 konsumen_to_collector_Collector_1 <= 0
-_C22: jumlah_produk_remanufaktur_Manufaktur_1
+_C26: jumlah_produk_remanufaktur_Manufaktur_1
  - 0.5 konsumen_to_collector_Collector_2 <= 0
-_C23: jumlah_produk_remanufaktur_Manufaktur_2
+_C27: jumlah_produk_remanufaktur_Manufaktur_2
  - 0.5 konsumen_to_collector_Collector_1 <= 0
-_C24: jumlah_produk_remanufaktur_Manufaktur_2
+_C28: jumlah_produk_remanufaktur_Manufaktur_2
  - 0.5 konsumen_to_collector_Collector_2 <= 0
-_C25: - 0.5 konsumen_to_collector_Collector_1 + produk_dibuang_Disposer_1 = 0
-_C26: - 0.5 konsumen_to_collector_Collector_2 + produk_dibuang_Disposer_1 = 0
-_C27: - 0.5 konsumen_to_collector_Collector_1 + produk_dibuang_Disposer_2 = 0
-_C28: - 0.5 konsumen_to_collector_Collector_2 + produk_dibuang_Disposer_2 = 0
-_C29: konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_1 <= 0
+_C29: - 0.5 konsumen_to_collector_Collector_1 + produk_dibuang_Disposer_1 = 0
 _C3: jumlah_produk_dikirim_ke_distributor_Distributor_1 >= 120000
-_C30: konsumen_to_collector_Collector_1 = 0
-_C31: konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_1 <= 0
-_C32: konsumen_to_collector_Collector_1 = 0
-_C33: konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_2 <= 0
+_C30: - 0.5 konsumen_to_collector_Collector_2 + produk_dibuang_Disposer_1 = 0
+_C31: - 0.5 konsumen_to_collector_Collector_1 + produk_dibuang_Disposer_2 = 0
+_C32: - 0.5 konsumen_to_collector_Collector_2 + produk_dibuang_Disposer_2 = 0
+_C33: 0.9 konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_1 <= 0
 _C34: konsumen_to_collector_Collector_1 = 0
-_C35: konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_2 <= 0
+_C35: 0.9 konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_1 <= 0
 _C36: konsumen_to_collector_Collector_1 = 0
-_C37: konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_3 <= 0
+_C37: 0.9 konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_2 <= 0
 _C38: konsumen_to_collector_Collector_1 = 0
-_C39: konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_3 <= 0
+_C39: 0.9 konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_2 <= 0
 _C4: jumlah_produk_dikirim_ke_distributor_Distributor_1 >= 130000
 _C40: konsumen_to_collector_Collector_1 = 0
-_C41: konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_4 <= 0
+_C41: 0.9 konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_3 <= 0
 _C42: konsumen_to_collector_Collector_1 = 0
-_C43: konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_4 <= 0
+_C43: 0.9 konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_3 <= 0
 _C44: konsumen_to_collector_Collector_1 = 0
-_C45: konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_1 <= 0
-_C46: konsumen_to_collector_Collector_2 = 0
-_C47: konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_1 <= 0
-_C48: konsumen_to_collector_Collector_2 = 0
-_C49: konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_2 <= 0
+_C45: 0.9 konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_4 <= 0
+_C46: konsumen_to_collector_Collector_1 = 0
+_C47: 0.9 konsumen_to_collector_Collector_1 - produk_to_konsum_Konsumen_4 <= 0
+_C48: konsumen_to_collector_Collector_1 = 0
+_C49: 0.9 konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_1 <= 0
 _C5: jumlah_produk_dikirim_ke_distributor_Distributor_2 >= 100000
 _C50: konsumen_to_collector_Collector_2 = 0
-_C51: konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_2 <= 0
+_C51: 0.9 konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_1 <= 0
 _C52: konsumen_to_collector_Collector_2 = 0
-_C53: konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_3 <= 0
+_C53: 0.9 konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_2 <= 0
 _C54: konsumen_to_collector_Collector_2 = 0
-_C55: konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_3 <= 0
+_C55: 0.9 konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_2 <= 0
 _C56: konsumen_to_collector_Collector_2 = 0
-_C57: konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_4 <= 0
+_C57: 0.9 konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_3 <= 0
 _C58: konsumen_to_collector_Collector_2 = 0
-_C59: konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_4 <= 0
+_C59: 0.9 konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_3 <= 0
 _C6: jumlah_produk_dikirim_ke_distributor_Distributor_2 >= 110000
 _C60: konsumen_to_collector_Collector_2 = 0
-_C61: - jumlah_produk_dikirim_ke_distributor_Distributor_1
+_C61: 0.9 konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_4 <= 0
+_C62: konsumen_to_collector_Collector_2 = 0
+_C63: 0.9 konsumen_to_collector_Collector_2 - produk_to_konsum_Konsumen_4 <= 0
+_C64: konsumen_to_collector_Collector_2 = 0
+_C65: - jumlah_produk_dikirim_ke_distributor_Distributor_1
  + jumlah_produk_remanufaktur_Manufaktur_1 <= 0
-_C62: - jumlah_produk_dikirim_ke_distributor_Distributor_2
+_C66: - jumlah_produk_dikirim_ke_distributor_Distributor_2
  + jumlah_produk_remanufaktur_Manufaktur_1 <= 0
-_C63: - jumlah_produk_dikirim_ke_distributor_Distributor_1
+_C67: - jumlah_produk_dikirim_ke_distributor_Distributor_1
  + jumlah_produk_remanufaktur_Manufaktur_2 <= 0
-_C64: - jumlah_produk_dikirim_ke_distributor_Distributor_2
+_C68: - jumlah_produk_dikirim_ke_distributor_Distributor_2
  + jumlah_produk_remanufaktur_Manufaktur_2 <= 0
-_C65: jumlah_produksi_manuf_Manufaktur_1 <= 135000
-_C66: jumlah_produksi_manuf_Manufaktur_1 <= 150000
-_C67: jumlah_produksi_manuf_Manufaktur_2 <= 135000
-_C68: jumlah_produksi_manuf_Manufaktur_2 <= 150000
-_C69: produk_to_konsum_Konsumen_1 <= 50000
+_C69: jumlah_produksi_manuf_Manufaktur_1 <= 135000
 _C7: jumlah_produk_dikirim_ke_distributor_Distributor_2 >= 120000
-_C70: produk_to_konsum_Konsumen_1 <= 60000
-_C71: produk_to_konsum_Konsumen_2 <= 50000
-_C72: produk_to_konsum_Konsumen_2 <= 60000
-_C73: produk_to_konsum_Konsumen_3 <= 50000
-_C74: produk_to_konsum_Konsumen_3 <= 60000
-_C75: produk_to_konsum_Konsumen_4 <= 50000
-_C76: produk_to_konsum_Konsumen_4 <= 60000
-_C77: konsumen_to_collector_Collector_1 <= 70000
-_C78: konsumen_to_collector_Collector_1 = 0
-_C79: konsumen_to_collector_Collector_1 <= 95000
+_C70: jumlah_produksi_manuf_Manufaktur_1 <= 150000
+_C71: jumlah_produksi_manuf_Manufaktur_2 <= 135000
+_C72: jumlah_produksi_manuf_Manufaktur_2 <= 150000
+_C73: produk_to_konsum_Konsumen_1 <= 50000
+_C74: produk_to_konsum_Konsumen_1 <= 60000
+_C75: produk_to_konsum_Konsumen_2 <= 50000
+_C76: produk_to_konsum_Konsumen_2 <= 60000
+_C77: produk_to_konsum_Konsumen_3 <= 50000
+_C78: produk_to_konsum_Konsumen_3 <= 60000
+_C79: produk_to_konsum_Konsumen_4 <= 50000
 _C8: jumlah_produk_dikirim_ke_distributor_Distributor_2 >= 130000
-_C80: konsumen_to_collector_Collector_1 = 0
-_C81: konsumen_to_collector_Collector_2 <= 70000
-_C82: konsumen_to_collector_Collector_2 = 0
-_C83: konsumen_to_collector_Collector_2 <= 95000
-_C84: konsumen_to_collector_Collector_2 = 0
-_C85: jumlah_produk_remanufaktur_Manufaktur_1 <= 88000
-_C86: jumlah_produk_remanufaktur_Manufaktur_1 <= 92000
-_C87: jumlah_produk_remanufaktur_Manufaktur_2 <= 88000
-_C88: jumlah_produk_remanufaktur_Manufaktur_2 <= 92000
-_C89: produk_dibuang_Disposer_1 <= 80000
+_C80: produk_to_konsum_Konsumen_4 <= 60000
+_C81: konsumen_to_collector_Collector_1 <= 70000
+_C82: konsumen_to_collector_Collector_1 = 0
+_C83: konsumen_to_collector_Collector_1 <= 95000
+_C84: konsumen_to_collector_Collector_1 = 0
+_C85: konsumen_to_collector_Collector_2 <= 70000
+_C86: konsumen_to_collector_Collector_2 = 0
+_C87: konsumen_to_collector_Collector_2 <= 95000
+_C88: konsumen_to_collector_Collector_2 = 0
+_C89: jumlah_produk_remanufaktur_Manufaktur_1 <= 88000
 _C9: - jumlah_produk_dikirim_ke_distributor_Distributor_1
  + jumlah_produk_remanufaktur_Manufaktur_1
  + jumlah_produksi_manuf_Manufaktur_1 = 0
-_C90: produk_dibuang_Disposer_1 = 0
-_C91: produk_dibuang_Disposer_1 <= 100000
-_C92: produk_dibuang_Disposer_1 = 0
-_C93: produk_dibuang_Disposer_2 <= 80000
-_C94: produk_dibuang_Disposer_2 = 0
-_C95: produk_dibuang_Disposer_2 <= 100000
-_C96: produk_dibuang_Disposer_2 = 0
-_C97: penawaran_diskon_Manufaktur_1 <= 50
-_C98: penawaran_diskon_Manufaktur_1 <= 55
-_C99: penawaran_diskon_Manufaktur_2 <= 50
+_C90: jumlah_produk_remanufaktur_Manufaktur_1 <= 92000
+_C91: jumlah_produk_remanufaktur_Manufaktur_2 <= 88000
+_C92: jumlah_produk_remanufaktur_Manufaktur_2 <= 92000
+_C93: produk_dibuang_Disposer_1 <= 80000
+_C94: produk_dibuang_Disposer_1 = 0
+_C95: produk_dibuang_Disposer_1 <= 100000
+_C96: produk_dibuang_Disposer_1 = 0
+_C97: produk_dibuang_Disposer_2 <= 80000
+_C98: produk_dibuang_Disposer_2 = 0
+_C99: produk_dibuang_Disposer_2 <= 100000
 Bounds
  0 <= jumlah_produk_dikirim_ke_distributor_Distributor_1
  0 <= jumlah_produk_dikirim_ke_distributor_Distributor_2
