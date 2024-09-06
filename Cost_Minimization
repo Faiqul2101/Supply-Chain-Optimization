@@ -1,7 +1,7 @@
 \* Supply_Chain_Optimization *\
 Minimize
 OBJ: 13 jumlah_produk_remanufaktur_Manufaktur_2
- + 19.5 jumlah_produksi_manuf_Manufaktur_2
+ + 19.5 jumlah_produksi_manuf_Manufaktur_2 + 8 produk_to_konsum_Konsumen_4
 Subject To
 _C1: jumlah_produk_dikirim_ke_distributor_Distributor_1 >= 100000
 _C10: - jumlah_produk_dikirim_ke_distributor_Distributor_2

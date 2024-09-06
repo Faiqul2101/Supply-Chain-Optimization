@@ -229,7 +229,14 @@ for item1 in manuf_keys:
         biaya_remanufaktur = lp.lpSum(Cre[item1] * Qrli[item2])
         print("BR")
         print(biaya_remanufaktur)
+
+for item in distributor_keys :
+    for item2 in konsumen_keys :
+        biaya_penanganan = lp.lpSum(Coj[item] * Qdjk[item2])
+        print("BPen")
+        print(biaya_penanganan)
         
+# Kalkulasi Biaya 
 # Constraint
 for item1 in distributor_keys :
     for item2 in konsumen_keys :
@@ -262,6 +269,7 @@ for item in collector_keys:
                 problem += lp.lpSum(Rkl[item]) <= lp.lpSum(Qdjk[item2])
             if GLti[item3] == 0 :
                 problem += lp.lpSum(Rkl[item]) == 0
+                
 #QRli <= Qpij
 for item in manuf_keys:
     for item2 in distributor_keys:
@@ -303,14 +311,14 @@ for item in manuf_keys :
     for item2 in manuf_keys:
         problem += lp.lpSum(Pd[item]) <= lp.lpSum(Png[item2])
 
-print(problem)
+# print(problem)
 
 print("==========================")
-print(biaya_produksi)
+# print(biaya_produksi)
 print("==========================")
-print(biaya_remanufaktur)
+# print(biaya_remanufaktur)
 
-problem += lp.lpSum(biaya_produksi + biaya_remanufaktur)
+problem += lp.lpSum(biaya_produksi + biaya_remanufaktur + biaya_penanganan)
 
 problem.writeLP("Cost_Minimization")
 problem.solve()
