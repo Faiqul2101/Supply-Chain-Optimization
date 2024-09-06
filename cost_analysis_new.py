@@ -207,7 +207,7 @@ Ul = lp.LpVariable.dicts("parameter_bangun_collector", collector_keys, 0,1,cat=l
 
 # Variabel Disposer
 Vm = lp.LpVariable.dicts("parameter_bangun_disposer", disposer_keys, 0,1,cat=lp.LpBinary)
-Qslm =  lp.LpVariable.dicts("produk_dibuang",manuf_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+Qslm =  lp.LpVariable.dicts("produk_dibuang",disposer_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
 # Cpi = PCi + Beta * GLti
 
@@ -228,30 +228,62 @@ for item1 in manuf_keys :
 # Constraint
 for item1 in manuf_keys :
     for item2 in konsumen_keys :
-        problem += lp.lpSum(QMi[item1]) >= lp.lpSum(Dk[item2]) # --> Nanti diganti QPij
+        problem += lp.lpSum(QPij[item1]) >= lp.lpSum(Dk[item2])
 
-# Sementara Di Hide (Biar Muncul Output)
-# for item1 in manuf_keys :
-#     problem += lp.lpSum(QMi[item1]) + lp.lpSum(Qrli[item1]) == lp.lpSum(QPij[item1])
+for item1 in manuf_keys :
+    for item2 in manuf_keys:
+        problem += lp.lpSum(QMi[item1]) + lp.lpSum(Qrli[item2]) == lp.lpSum(QPij[item1])
 
-# print(Cpi)
+#Qdjk <= QPij
+for item in konsumen_keys:
+    for item2 in manuf_keys:
+        problem += lp.lpSum(Qdjk[item]) <= lp.lpSum(QPij[item2])
+
+#QRli <= (1-Fd) Rkl
+for item in manuf_keys :
+    for item2 in collector_keys:
+        problem += lp.lpSum(Qrli[item]) <= (1-0.5) * lp.lpSum(Rkl[item2])
+
+#QSlm == Fd Rkl
+for item in disposer_keys :
+    for item2 in collector_keys :
+        problem += lp.lpSum(Qslm[item]) == 0.5 * lp.lpSum(Rkl[item2])
+
+#Rkl <= Yk QDjk GLti
+
+#QRli <= Qpij
+for item in manuf_keys:
+    for item2 in manuf_keys:
+        problem += lp.lpSum(Qrli[item]) <= lp.lpSum(QPij[item2])
+
+#QMi <= Cppi
+for item in manuf_keys :
+    for item2 in manuf_keys:
+        problem += lp.lpSum(QMi[item]) <= lp.lpSum(Cppi[item2])
+
+#Qdjk <= Cpdj
+for item in konsumen_keys:
+    # for item2 in 
+    pass
+print(problem)
+
 print("==========================")
 print(biaya_produksi)
 print("==========================")
 
-problem += lp.lpSum(biaya_produksi)
+# problem += lp.lpSum(biaya_produksi)
 
-problem.writeLP("Cost_Minimization")
-problem.solve()
-print("Status:", lp.LpStatus[problem.status])
+# problem.writeLP("Cost_Minimization")
+# problem.solve()
+# print("Status:", lp.LpStatus[problem.status])
 
-print(problem)
-status = problem.solve()
-print(lp.LpStatus[status])
 
-for v in problem.variables():
-    print(v.name, "=", v.varValue)
+# status = problem.solve()
+# print(lp.LpStatus[status])
 
-print("Total Biaya =", lp.value(problem.objective))
+# for v in problem.variables():
+#     print(v.name, "=", v.varValue)
+
+# print("Total Biaya =", lp.value(problem.objective))
 
 # print(problem)
