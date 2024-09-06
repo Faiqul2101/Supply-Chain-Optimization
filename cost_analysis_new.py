@@ -195,7 +195,7 @@ Qrli = lp.LpVariable.dicts("jumlah_produk_remanufaktur", manuf_keys, 0,None,cat=
 GLti = lp.LpVariable.dicts("parameter_ramah", manuf_keys, 0,1,cat=lp.LpBinary)
 # Variabel Distributor
 Qdjk = lp.LpVariable.dicts("produk_to_konsum",konsumen_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
-
+    
 # Variabel Konsumen
 Rkl =  lp.LpVariable.dicts("konsumen_to_collector",collector_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
