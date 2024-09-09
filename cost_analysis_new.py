@@ -33,6 +33,28 @@ Cdv = { # Asumsi Trailer Petrol dan Truck Petrol
         "l1 ke m2" : 10,
         "l2 ke m1" : 9,
         "l2 ke m2" : 10,
+    },
+
+    "is" : {
+        "i1 ke s1" : 9,
+        "i1 ke s2" : 10,
+        "i1 ke s3" : 9,
+        "i1 ke s4" : 10,
+        "i2 ke s1" : 9,
+        "i2 ke s2" : 10,
+        "i2 ke s3" : 9,
+        "i2 ke s4" : 10,
+    },
+    
+    "sl" : {
+        "s1 ke l1" : 9,
+        "s2 ke l1" : 10,
+        "s3 ke l1" : 9,
+        "s4 ke l1" : 10,
+        "s1 ke l2" : 9,
+        "s2 ke l2" : 10,
+        "s3 ke l2" : 9,
+        "s4 ke l2" : 10,
     }
 }
 
@@ -78,6 +100,28 @@ d = {
         "l1 ke m2" : 750,
         "l2 ke m1" : 250,
         "l2 ke m2" : 750,
+    },
+
+    "is" : {
+        "i1 ke s1" : 110,
+        "i1 ke s2" : 125,
+        "i1 ke s3" : 110,
+        "i1 ke s4" : 125,
+        "i2 ke s1" : 110,
+        "i2 ke s2" : 125,
+        "i2 ke s3" : 110,
+        "i2 ke s4" : 125,
+    },
+
+    "sl" : {
+        "s1 ke l1" : 150,
+        "s2 ke l1" : 200,
+        "s3 ke l1" : 150,
+        "s4 ke l1" : 200,
+        "s1 ke l2" : 150,
+        "s2 ke l2" : 200,
+        "s3 ke l2" : 150,
+        "s4 ke l2" : 200,
     }
 }
 
@@ -98,7 +142,7 @@ Beta = {
     "Manufaktur 2" : 0.3
 }
 
-Png = {
+Pngi = {
     "Manufaktur 1" : 50,
     "Manufaktur 2" : 55
 }
@@ -117,6 +161,16 @@ dd = {
     "Manufaktur 1" : 0.3,
     "Manufaktur 2" : 0.5
 }
+
+# SECONDARY MARKET
+Csr = {
+    "Sekunder 1" : 30,
+    "Sekunder 2" : 35,
+    "Sekunder 3" : 45,
+    "Sekunder 4" : 50,
+}
+
+
 # DISTRIBUTOR COST
 
 Coj = {
@@ -132,61 +186,68 @@ Ccl = {
 }
 
 Fcl = {
-    "Collector 1" : 20*20000,
-    "Collector 2" : 20*25000
+    "Collector 1" : 20*20,
+    "Collector 2" : 20*25
 }
 
 # DISPOSER COST
 
-Cdm = {
+Cdl = {
     "Disposer 1" : 10,
     "Disposer 2" : 13
 }
 
 Fbm = {
-    "Disposer 1" : 10*30000,
-    "Disposer 2" : 10*35000
+    "Disposer 1" : 10*30,
+    "Disposer 2" : 10*35
 }
 
 # CAPACITY 
 Cppi ={
-    "Manufaktur 1" : 135000,
-    "Manufaktur 2" : 150000
+    "Manufaktur 1" : 135,
+    "Manufaktur 2" : 150
 }
 
 Cri = {
-    "Manufaktur 1" : 88000,
-    "Manufaktur 2" : 92000
+    "Manufaktur 1" : 88,
+    "Manufaktur 2" : 92
 }
 
 Cpdj = {
-    "Distributor 1" : 50000,
-    "Distributor 2" : 60000   
+    "Distributor 1" : 50,
+    "Distributor 2" : 60   
 }
 
 Cccl = {
-    "Collector 1" : 70000,
-    "Collector 2" : 95000
+    "Collector 1" : 70,
+    "Collector 2" : 95
 }
 
 Ccdm = {
-    "Disposer 1" : 80000,
-    "Disposer 2" : 100000
+    "Disposer 1" : 80,
+    "Disposer 2" : 100
 }
-
 
 # DEMAND
 Dk = {
-    "Konsumen 1" : 100000,
-    "Konsumen 2" : 110000,
-    "Konsumen 3" : 120000,
-    "Konsumen 4" : 130000
+    "Konsumen 1" : 100,
+    "Konsumen 2" : 110,
+    "Konsumen 3" : 120,
+    "Konsumen 4" : 130
+}
+
+Ds = {
+    "Sekunder 1" : 25,
+    "Sekunder 2" : 35,
+    "Sekunder 3" : 45,
+    "Sekunder 4" : 50,
 }
 
 # Kumpulan Keys
 manuf_keys = PCi.keys()
 distributor_keys = Coj.keys()
 konsumen_keys = Dk.keys()
+sekunder_keys = Ds.keys()
 collector_keys = Cccl.keys()
 disposer_keys = Ccdm.keys()
 Cdv_ij = Cdv["ij"].keys()
@@ -203,10 +264,11 @@ d_lm = d["lm"].keys()
 problem = lp.LpProblem("Supply_Chain_Optimization", lp.LpMinimize)
 
 # Variabel Manufaktur
-QMi = lp.LpVariable.dicts("jumlah_produksi_manuf", manuf_keys, 0,None,cat=lp.LpInteger)
-Qrli = lp.LpVariable.dicts("jumlah_produk_remanufaktur", manuf_keys, 0,None,cat=lp.LpInteger)
-QPij = lp.LpVariable.dicts("jumlah_produk_dikirim_ke_distributor", distributor_keys, 0,None,cat=lp.LpInteger)
+PMi = lp.LpVariable.dicts("jumlah_produksi_manuf", manuf_keys, 0,None,cat=lp.LpInteger)
 Pd = lp.LpVariable.dicts("penawaran_diskon", manuf_keys, 0,None,cat=lp.LpInteger)
+Pre = lp.LpVariable.dicts("nilai_bekas_pakai", manuf_keys, 0,None,cat=lp.LpInteger)
+QPij = lp.LpVariable.dicts("jumlah_produk_yang_diproduksi", manuf_keys, 0,None,cat=lp.LpInteger)
+Qrli = lp.LpVariable.dicts("jumlah_produk_remanufaktur", manuf_keys, 0,None,cat=lp.LpInteger)
 GLti = lp.LpVariable.dicts("parameter_ramah", manuf_keys, 0, 1,cat=lp.LpInteger)
 
 # Variabel Distributor
@@ -215,8 +277,12 @@ Qdjk = lp.LpVariable.dicts("produk_to_konsum",konsumen_keys,lowBound=0,upBound=N
 # Variabel Konsumen
 Rkl =  lp.LpVariable.dicts("konsumen_to_collector",collector_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
+# Variabel Sekunder
+Qmis =  lp.LpVariable.dicts("produk_ke_pasar_sekunder",sekunder_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+
 # Variabel Collector
 Ul = lp.LpVariable.dicts("parameter_bangun_collector", collector_keys, 0,1,cat=lp.LpBinary)
+Qwsl =  lp.LpVariable.dicts("produk_ke_pasar_sekunder",collector_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
 # Variabel Disposer
 Vm = lp.LpVariable.dicts("parameter_bangun_disposer", disposer_keys, 0,1,cat=lp.LpBinary)
@@ -229,9 +295,9 @@ for item1 in manuf_keys :
     for item2 in manuf_keys:
         for item3 in manuf_keys: 
             if GLti[item1] != 0 : 
-                biaya_produksi = lp.lpSum((PCi[item1] + Beta[item2]) * QMi[item3]) 
+                biaya_produksi = lp.lpSum((PCi[item1] + Beta[item2]) * QPij[item3]) 
             if GLti[item1] == 0 : 
-                biaya_produksi = lp.lpSum(PCi[item1] * QMi[item3]) 
+                biaya_produksi = lp.lpSum(PCi[item1] * QPij[item3]) 
 
 # Kalkulasi Biaya Remanufaktur, Cre * QRli --> Ngga Pengaruh Ke Total Biaya
 for item1 in manuf_keys:
