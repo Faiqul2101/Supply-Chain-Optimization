@@ -333,21 +333,26 @@ PMi = lp.LpVariable.dicts("jumlah_produksi_manuf", manuf_keys, 0,None,cat=lp.LpI
 Pd = lp.LpVariable.dicts("penawaran_diskon", manuf_keys, 0,None,cat=lp.LpInteger)
 Pre = lp.LpVariable.dicts("nilai_bekas_pakai", manuf_keys, 0,None,cat=lp.LpInteger)
 QPij = lp.LpVariable.dicts("Qpij", manuf_keys, 0,None,cat=lp.LpInteger)
+QPij1 = lp.LpVariable.dicts("Qpij", konsumen_keys, 0,None,cat=lp.LpInteger)
 Qrli = lp.LpVariable.dicts("jumlah_produk_remanufaktur", manuf_keys, 0,None,cat=lp.LpInteger)
 GLti = lp.LpVariable.dicts("parameter_ramah", manuf_keys, 0, 1,cat=lp.LpInteger)
 
 # Variabel Distributor
 Qdjk = lp.LpVariable.dicts("produk_to_konsum",konsumen_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+Qdjk1 = lp.LpVariable.dicts("Qdjk",distributor_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
     
 # Variabel Konsumen
 Rkl =  lp.LpVariable.dicts("konsumen_to_collector",collector_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+Rkl1 =  lp.LpVariable.dicts("Rkl",konsumen_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
 # Variabel Sekunder
-Qmis =  lp.LpVariable.dicts("produk_ke_pasar_sekunder",sekunder_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+Qmis =  lp.LpVariable.dicts("Qmis",sekunder_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+Qmis1 =  lp.LpVariable.dicts("Qmis",manuf_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
 # Variabel Collector
 Ul = lp.LpVariable.dicts("parameter_bangun_collector", collector_keys, 0,1,cat=lp.LpBinary)
 Qwsl =  lp.LpVariable.dicts("produk_ke_pusat_pengumpulan",collector_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
+Qwsl1 =  lp.LpVariable.dicts("produk_ke_pusat_pengumpulan",sekunder_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
 # Variabel Disposer
 Vm = lp.LpVariable.dicts("parameter_bangun_disposer", disposer_keys, 0,1,cat=lp.LpBinary)
@@ -410,28 +415,41 @@ for item1 in manuf_keys :
 
 # # Constraint
 #QPij >= Dk --> Aman
+# Opsi 1 
 problem += lp.lpSum(QPij[item1] for item1 in manuf_keys) >= lp.lpSum(Dk[item2] for item2 in konsumen_keys)
+# Opsi 2
+for item in konsumen_keys :
+    problem += lp.lpSum(QPij1[item]) >= Dk[item]
 # for item1 in manuf_keys :
 #     for item2 in konsumen_keys :
 #         problem += lp.lpSum(QPij[item1]) >= lp.lpSum(Dk[item2])
 
-problem += lp.lpSum(Qmis[item1] for item1 in sekunder_keys) >= lp.lpSum(Ds[item2] for item2 in sekunder_keys)
 # #Qmis >= Ds
+# Opsi 1
+problem += lp.lpSum(Qmis1[item1] for item1 in manuf_keys) >= lp.lpSum(Ds[item2] for item2 in sekunder_keys)
+# Opsi 2
+for item in sekunder_keys :
+    problem += lp.lpSum(Qmis[item]) >= Ds[item]
+# problem += lp.lpSum(Qmis[item1] for item1 in sekunder_keys) >= lp.lpSum(Ds[item2] for item2 in sekunder_keys)
 # for item1 in sekunder_keys:
 #     for item2 in sekunder_keys :
 #         problem += lp.lpSum(Qmis[item1]) >= lp.lpSum(Ds[item2])
 
-#Qdjk <= QPij
-for item in konsumen_keys:
-    for item2 in manuf_keys:
-        problem += lp.lpSum(Qdjk[item]) <= lp.lpSum(QPij[item2])
+#Qdjk <= Qpij  
+problem += lp.lpSum(Qdjk1[item1] for item1 in distributor_keys) <= lp.lpSum(QPij[item2] for item2 in manuf_keys)
+# for item in konsumen_keys:
+#     for item2 in manuf_keys:
+#         problem += lp.lpSum(Qdjk[item]) <= lp.lpSum(QPij[item2])
 
 # #QRli <= (1-Fd) Rkl
+problem += lp.lpSum(Qrli[item1] for item1 in manuf_keys) <= (1-0.5) * lp.lpSum(Rkl1[item2] for item2 in konsumen_keys)
 # for item in manuf_keys :
 #     for item2 in collector_keys:
 #         problem += lp.lpSum(Qrli[item]) <= (1-0.5) * lp.lpSum(Rkl[item2])
 
 # #QSlm == Fd Rkl + Qwsl
+problem += lp.lpSum(Qslm[item1] for item1 in disposer_keys) == 0.5 * lp.lpSum(Rkl1[item2] for item2 in konsumen_keys) + lp.lpSum(Qwsl1[item3] for item3 in sekunder_keys )
+
 # for item in disposer_keys :
 #     for item2 in collector_keys :
 #         for item3 in collector_keys : 
@@ -448,11 +466,13 @@ for item in konsumen_keys:
 #             #     problem += lp.lpSum(Rkl[item]) == 0
                 
 # #QRli <= Qpij
+problem += lp.lpSum(Qrli[item1] for item1 in manuf_keys) <= lp.lpSum(QPij[item2] for item2 in manuf_keys)
 # for item in manuf_keys:
 #     for item2 in manuf_keys:
 #         problem += lp.lpSum(Qrli[item]) <= lp.lpSum(QPij[item2])
 
 # #Qmis <= Qrli
+problem += lp.lpSum(Qmis1[item1] for item1 in manuf_keys) <= lp.lpSum(Qrli[item2] for item2 in manuf_keys)
 # for item in sekunder_keys:
 #     for item2 in manuf_keys:
 #         problem += lp.lpSum(Qmis[item]) <= lp.lpSum(Qrli[item2])
@@ -463,54 +483,80 @@ for item in konsumen_keys:
 #         problem += lp.lpSum(Qwsl[item]) <= lp.lpSum(Qmis[item2])
 
 #Qpij <= Cppi
+# Opsi 1
 for item in manuf_keys :
-    for item2 in manuf_keys:
-        problem += lp.lpSum(QPij[item]) <= lp.lpSum(Cppi[item2])
+    problem += lp.lpSum(QPij[item]) <= Cppi[item]
+# Opsi 2
+problem += lp.lpSum(QPij[item] for item in manuf_keys) <= lp.lpSum(Cppi[item1] for item1 in manuf_keys)
+# for item in manuf_keys :
+#     for item2 in manuf_keys:
+#         problem += lp.lpSum(QPij[item]) <= lp.lpSum(Cppi[item2])
 
 #Qdjk <= Cpdj
-for item in konsumen_keys:
-    for item2 in distributor_keys :
-        problem += lp.lpSum(Qdjk[item]) <= lp.lpSum(Cpdj[item2])
+# Opsi 1
+for item in distributor_keys :
+    problem += lp.lpSum(Qdjk1[item]) <= Cpdj[item]
+# Opsi 2
+problem += lp.lpSum(Qdjk1[item] for item in distributor_keys) <= lp.lpSum(Cpdj[item1]for item1 in distributor_keys)
+# for item in konsumen_keys:
+#     for item2 in distributor_keys :
+#         problem += lp.lpSum(Qdjk[item]) <= lp.lpSum(Cpdj[item2])
 
 #Rkl <= ul Cccl  --> Ditambahkan Langkah Logis nya untuk menentukan Ul (Based on 0 < RKL < Cccl, maka collector +1 )
-for item in collector_keys : 
-    for item2 in collector_keys :
-        problem += lp.lpSum(Rkl[item]) <= lp.lpSum(Cccl[item2])
+# Opsi 1
+for item in collector_keys :
+    problem += lp.lpSum(Rkl[item]) <= Cccl[item]
+# Opsi 2
+problem += lp.lpSum(Rkl[item] for item in collector_keys) <= lp.lpSum(Cccl[item1] for item1 in collector_keys)
+# for item in collector_keys : 
+#     for item2 in collector_keys :
+#         problem += lp.lpSum(Rkl[item]) <= lp.lpSum(Cccl[item2])
         # if Ul[item2] != 0 :
         #     problem += lp.lpSum(Rkl[item]) <= lp.lpSum(Cccl[item2])
         # if Ul[item2] == 0 :
         #     problem += lp.lpSum(Rkl[item]) == 0
 
 #Qwsl <= ul Csrl --> Ditambahkan Langkah Logis nya untuk menentukan Ul (Based on 0 < RKL < Cccl, maka collector +1 )
-for item in collector_keys:
-    for item2 in sekunder_keys:
-        for item3 in collector_keys: 
-            problem += lp.lpSum(Qwsl[item]) <= lp.lpSum(Csr[item2])
+# Opsi 1
+for item in sekunder_keys :
+    problem += lp.lpSum(Qwsl1[item]) <= Csr[item]
+# Opsi 2
+problem += lp.lpSum(Qwsl1[item]for item in sekunder_keys) <= lp.lpSum(Csr[item1]for item1 in sekunder_keys)
+# for item in collector_keys:
+#     for item2 in sekunder_keys:
+#         for item3 in collector_keys: 
+#             problem += lp.lpSum(Qwsl[item]) <= lp.lpSum(Csr[item2])
             # if Ul[item3] != 0 :
             #     problem += lp.lpSum(Qwsl[item]) <= lp.lpSum(Csr[item2])
             # if Ul[item3] == 0 :
             #     problem += lp.lpSum(Qwsl[item]) == 0 
                 
 #Qrli <= Cri --> Ditambahkan Langkah Logis nya untuk menentukan Ul (Based on 0 < RKL < Cccl, maka collector +1 )
+# Opsi 1
 for item in manuf_keys :
-    for item2 in manuf_keys:
-        problem += lp.lpSum(Qrli[item]) <= lp.lpSum(Cri[item2])
+    problem += lp.lpSum(Qrli[item]) <= Cri[item]
+problem += lp.lpSum(Qrli[item] for item in manuf_keys) <= lp.lpSum(Cri[item1] for item1 in manuf_keys)
 
 #Qslm <= vm Ccdm
+# Opsi 1
 for item in disposer_keys :
-    for item2 in disposer_keys :
-        problem += lp.lpSum(Qslm[item]) <= lp.lpSum(Ccdm[item2])
+    problem += lp.lpSum(Qslm[item]) <= Ccdm[item]
+# Opsi 2
+problem += lp.lpSum(Qslm[item] for item in disposer_keys) <= lp.lpSum(Ccdm[item1] for item1 in disposer_keys)
         # if Vm[item2] != 0 :
         #     problem += lp.lpSum(Qslm[item]) <= lp.lpSum(Ccdm[item2])
         # if Vm[item2] == 0 :
         #     problem += lp.lpSum(Qslm[item]) == 0
 
 # #Pd <= Pngi
-# for item in manuf_keys :
-#     for item2 in manuf_keys:
-#         problem += lp.lpSum(Pd[item]) <= lp.lpSum(Pngi[item2])
+# Opsi 1
+for item in manuf_keys :
+    problem += lp.lpSum(Pd[item]) <= Pngi[item]
+# Opsi 2
+problem += lp.lpSum(Pd[item] for item in manuf_keys) <= lp.lpSum(Pngi[item2] for item2 in manuf_keys)
 
 # # EV1
+problem += 50*(lp.lpSum(d["ij"][item] * (QPij[item2] * (1/Cvl[item3])) for item in d_ij for item2 in manuf_keys for item3 in Cvl_keys) + lp.lpSum(d['is'][item4]*(Qmis1[item5] *(1/Cvt["is"][item6]))for item4 in d_is for item5 in manuf_keys for item6 in Cvt_keys_is)) <= 160
 # for item in d_ij :
 #     for item2 in manuf_keys:
 #         for item3 in Cvl_keys :
@@ -520,12 +566,14 @@ for item in disposer_keys :
 #                         problem += 50 * (lp.lpSum(d["ij"][item] * (QPij[item2] * (Cvl[item3])**-1)) + lp.lpSum(d["is"][item4] * (Qmis[item5] * (Cvt["is"][item6])**-1))) <= 160
 
 # # EV2
+problem += 50*(lp.lpSum(d["jk"][item]* Qdjk1[item2]*(1/Cvt['jk'][item3])for item in d_jk for item2 in distributor_keys for item3 in Cvt_keys_jk))<=60
 # for item in d_jk :
 #     for item2 in konsumen_keys :
 #         for item3 in Cvt_keys_jk :
 #             problem += 50 * (lp.lpSum(d["jk"][item] * Qdjk[item2] * (Cvt["jk"][item3])**-1)) <= 60
         
 # # EV3
+problem += 50*(lp.lpSum(d["li"][item] * Qrli[item2] *(1/Cvt["li"][item3]) for item in d_li for item2 in manuf_keys for item3 in Cvt_keys_li) + lp.lpSum(d['sl'][item4]* Qwsl1[item5] * (1/Cvt['sl'][item6]) for item4 in d_sl for item5 in sekunder_keys for item6 in Cvt_keys_sl)) <= 120
 # for item in d_li :
 #     for item2 in manuf_keys :
 #         for item3 in Cvt_keys_li :
@@ -535,6 +583,7 @@ for item in disposer_keys :
 #                         problem += 50 * (lp.lpSum(d["li"][item] * Qrli[item2] * (Cvt["li"][item3])**-1) + d["sl"][item4] * Qwsl[item5] * (Cvt["sl"][item6])**-1) <= 120
 
 # # EV4
+problem += 0.7* (lp.lpSum(QPij[item] + Qmis1[item] for item in manuf_keys)) <=150
 # for item in manuf_keys :
 #     for item2 in sekunder_keys :
 #         problem += 0.7 * (lp.lpSum(QPij[item] + Qmis[item2])) <= 150
@@ -554,16 +603,16 @@ for item in disposer_keys :
 # # print("Biaya Pemilahan: ", biaya_pemilahan)
 # print("=================================")
 
-# problem.writeLP("Cost_Minimization")
-# problem.solve()
-# print("Status:", lp.LpStatus[problem.status])
+problem.writeLP("Cost_Minimization")
+problem.solve()
+print("Status:", lp.LpStatus[problem.status])
 
-# status = problem.solve(lp.PULP_CBC_CMD(msg=0))
-# print(lp.LpStatus[status])
+status = problem.solve(lp.PULP_CBC_CMD(msg=0))
+print(lp.LpStatus[status])
 
 print(problem)
 
-# for v in problem.variables():
-#     print(v.name, "=", v.varValue)
+for v in problem.variables():
+    print(v.name, "=", v.varValue)
 
 # print("Total Biaya =", lp.value(problem.objective))

@@ -2,75 +2,133 @@
 Minimize
 OBJ: __dummy
 Subject To
-_C1: jumlah_produk_yang_diproduksi_Manufaktur_1 <= 135
-_C10: produk_to_konsum_Konsumen_3 <= 60
-_C11: produk_to_konsum_Konsumen_4 <= 50
-_C12: produk_to_konsum_Konsumen_4 <= 60
-_C13: konsumen_to_collector_Collector_1 <= 70
-_C14: konsumen_to_collector_Collector_1 <= 95
-_C15: konsumen_to_collector_Collector_2 <= 70
-_C16: konsumen_to_collector_Collector_2 <= 95
-_C17: produk_ke_pusat_pengumpulan_Collector_1 <= 30
-_C18: produk_ke_pusat_pengumpulan_Collector_1 <= 30
-_C19: produk_ke_pusat_pengumpulan_Collector_1 <= 35
-_C2: jumlah_produk_yang_diproduksi_Manufaktur_1 <= 150
-_C20: produk_ke_pusat_pengumpulan_Collector_1 <= 35
-_C21: produk_ke_pusat_pengumpulan_Collector_1 <= 45
-_C22: produk_ke_pusat_pengumpulan_Collector_1 <= 45
-_C23: produk_ke_pusat_pengumpulan_Collector_1 <= 50
-_C24: produk_ke_pusat_pengumpulan_Collector_1 <= 50
-_C25: produk_ke_pusat_pengumpulan_Collector_2 <= 30
-_C26: produk_ke_pusat_pengumpulan_Collector_2 <= 30
-_C27: produk_ke_pusat_pengumpulan_Collector_2 <= 35
-_C28: produk_ke_pusat_pengumpulan_Collector_2 <= 35
-_C29: produk_ke_pusat_pengumpulan_Collector_2 <= 45
-_C3: jumlah_produk_yang_diproduksi_Manufaktur_2 <= 135
-_C30: produk_ke_pusat_pengumpulan_Collector_2 <= 45
-_C31: produk_ke_pusat_pengumpulan_Collector_2 <= 50
-_C32: produk_ke_pusat_pengumpulan_Collector_2 <= 50
-_C33: jumlah_produk_remanufaktur_Manufaktur_1 <= 88
-_C34: jumlah_produk_remanufaktur_Manufaktur_1 <= 92
-_C35: jumlah_produk_remanufaktur_Manufaktur_2 <= 88
-_C36: jumlah_produk_remanufaktur_Manufaktur_2 <= 92
-_C37: produk_dibuang_Disposer_1 <= 80
-_C38: produk_dibuang_Disposer_1 <= 100
-_C39: produk_dibuang_Disposer_2 <= 80
-_C4: jumlah_produk_yang_diproduksi_Manufaktur_2 <= 150
-_C40: produk_dibuang_Disposer_2 <= 100
-_C5: produk_to_konsum_Konsumen_1 <= 50
-_C6: produk_to_konsum_Konsumen_1 <= 60
-_C7: produk_to_konsum_Konsumen_2 <= 50
-_C8: produk_to_konsum_Konsumen_2 <= 60
-_C9: produk_to_konsum_Konsumen_3 <= 50
+_C1: Qpij_Manufaktur_1 + Qpij_Manufaktur_2 >= 460
+_C10: Qmis_Sekunder_4 >= 50
+_C11: Qdjk_Distributor_1 + Qdjk_Distributor_2 - Qpij_Manufaktur_1
+ - Qpij_Manufaktur_2 <= 0
+_C12: - 0.5 Rkl_Konsumen_1 - 0.5 Rkl_Konsumen_2 - 0.5 Rkl_Konsumen_3
+ - 0.5 Rkl_Konsumen_4 + jumlah_produk_remanufaktur_Manufaktur_1
+ + jumlah_produk_remanufaktur_Manufaktur_2 <= 0
+_C13: - 0.5 Rkl_Konsumen_1 - 0.5 Rkl_Konsumen_2 - 0.5 Rkl_Konsumen_3
+ - 0.5 Rkl_Konsumen_4 + produk_dibuang_Disposer_1 + produk_dibuang_Disposer_2
+ - produk_ke_pusat_pengumpulan_Sekunder_1
+ - produk_ke_pusat_pengumpulan_Sekunder_2
+ - produk_ke_pusat_pengumpulan_Sekunder_3
+ - produk_ke_pusat_pengumpulan_Sekunder_4 = 0
+_C14: - Qpij_Manufaktur_1 - Qpij_Manufaktur_2
+ + jumlah_produk_remanufaktur_Manufaktur_1
+ + jumlah_produk_remanufaktur_Manufaktur_2 <= 0
+_C15: Qmis_Manufaktur_1 + Qmis_Manufaktur_2
+ - jumlah_produk_remanufaktur_Manufaktur_1
+ - jumlah_produk_remanufaktur_Manufaktur_2 <= 0
+_C16: Qpij_Manufaktur_1 <= 135
+_C17: Qpij_Manufaktur_2 <= 150
+_C18: Qpij_Manufaktur_1 + Qpij_Manufaktur_2 <= 285
+_C19: Qdjk_Distributor_1 <= 50
+_C2: Qpij_Konsumen_1 >= 100
+_C20: Qdjk_Distributor_2 <= 60
+_C21: Qdjk_Distributor_1 + Qdjk_Distributor_2 <= 110
+_C22: konsumen_to_collector_Collector_1 <= 70
+_C23: konsumen_to_collector_Collector_2 <= 95
+_C24: konsumen_to_collector_Collector_1 + konsumen_to_collector_Collector_2
+ <= 165
+_C25: produk_ke_pusat_pengumpulan_Sekunder_1 <= 30
+_C26: produk_ke_pusat_pengumpulan_Sekunder_2 <= 35
+_C27: produk_ke_pusat_pengumpulan_Sekunder_3 <= 45
+_C28: produk_ke_pusat_pengumpulan_Sekunder_4 <= 50
+_C29: produk_ke_pusat_pengumpulan_Sekunder_1
+ + produk_ke_pusat_pengumpulan_Sekunder_2
+ + produk_ke_pusat_pengumpulan_Sekunder_3
+ + produk_ke_pusat_pengumpulan_Sekunder_4 <= 160
+_C3: Qpij_Konsumen_2 >= 110
+_C30: jumlah_produk_remanufaktur_Manufaktur_1 <= 88
+_C31: jumlah_produk_remanufaktur_Manufaktur_2 <= 92
+_C32: jumlah_produk_remanufaktur_Manufaktur_1
+ + jumlah_produk_remanufaktur_Manufaktur_2 <= 180
+_C33: produk_dibuang_Disposer_1 <= 80
+_C34: produk_dibuang_Disposer_2 <= 100
+_C35: produk_dibuang_Disposer_1 + produk_dibuang_Disposer_2 <= 180
+_C36: penawaran_diskon_Manufaktur_1 <= 50
+_C37: penawaran_diskon_Manufaktur_2 <= 55
+_C38: penawaran_diskon_Manufaktur_1 + penawaran_diskon_Manufaktur_2 <= 105
+_C39: 34466.6666667 Qmis_Manufaktur_1 + 34466.6666667 Qmis_Manufaktur_2
+ + 10852.173913 Qpij_Manufaktur_1 + 10852.173913 Qpij_Manufaktur_2 <= 160
+_C4: Qpij_Konsumen_3 >= 120
+_C40: 66000 Qdjk_Distributor_1 + 66000 Qdjk_Distributor_2 <= 60
+_C41: 31166.6666667 jumlah_produk_remanufaktur_Manufaktur_1
+ + 31166.6666667 jumlah_produk_remanufaktur_Manufaktur_2
+ + 51333.3333333 produk_ke_pusat_pengumpulan_Sekunder_1
+ + 51333.3333333 produk_ke_pusat_pengumpulan_Sekunder_2
+ + 51333.3333333 produk_ke_pusat_pengumpulan_Sekunder_3
+ + 51333.3333333 produk_ke_pusat_pengumpulan_Sekunder_4 <= 120
+_C42: 0.7 Qmis_Manufaktur_1 + 0.7 Qmis_Manufaktur_2 + 0.7 Qpij_Manufaktur_1
+ + 0.7 Qpij_Manufaktur_2 <= 150
+_C5: Qpij_Konsumen_4 >= 130
+_C6: Qmis_Manufaktur_1 + Qmis_Manufaktur_2 >= 155
+_C7: Qmis_Sekunder_1 >= 25
+_C8: Qmis_Sekunder_2 >= 35
+_C9: Qmis_Sekunder_3 >= 45
 Bounds
+ 0 <= Qdjk_Distributor_1
+ 0 <= Qdjk_Distributor_2
+ 0 <= Qmis_Manufaktur_1
+ 0 <= Qmis_Manufaktur_2
+ 0 <= Qmis_Sekunder_1
+ 0 <= Qmis_Sekunder_2
+ 0 <= Qmis_Sekunder_3
+ 0 <= Qmis_Sekunder_4
+ 0 <= Qpij_Konsumen_1
+ 0 <= Qpij_Konsumen_2
+ 0 <= Qpij_Konsumen_3
+ 0 <= Qpij_Konsumen_4
+ 0 <= Qpij_Manufaktur_1
+ 0 <= Qpij_Manufaktur_2
+ 0 <= Rkl_Konsumen_1
+ 0 <= Rkl_Konsumen_2
+ 0 <= Rkl_Konsumen_3
+ 0 <= Rkl_Konsumen_4
  __dummy = 0
  0 <= jumlah_produk_remanufaktur_Manufaktur_1
  0 <= jumlah_produk_remanufaktur_Manufaktur_2
- 0 <= jumlah_produk_yang_diproduksi_Manufaktur_1
- 0 <= jumlah_produk_yang_diproduksi_Manufaktur_2
  0 <= konsumen_to_collector_Collector_1
  0 <= konsumen_to_collector_Collector_2
+ 0 <= penawaran_diskon_Manufaktur_1
+ 0 <= penawaran_diskon_Manufaktur_2
  0 <= produk_dibuang_Disposer_1
  0 <= produk_dibuang_Disposer_2
- 0 <= produk_ke_pusat_pengumpulan_Collector_1
- 0 <= produk_ke_pusat_pengumpulan_Collector_2
- 0 <= produk_to_konsum_Konsumen_1
- 0 <= produk_to_konsum_Konsumen_2
- 0 <= produk_to_konsum_Konsumen_3
- 0 <= produk_to_konsum_Konsumen_4
+ 0 <= produk_ke_pusat_pengumpulan_Sekunder_1
+ 0 <= produk_ke_pusat_pengumpulan_Sekunder_2
+ 0 <= produk_ke_pusat_pengumpulan_Sekunder_3
+ 0 <= produk_ke_pusat_pengumpulan_Sekunder_4
 Generals
+Qdjk_Distributor_1
+Qdjk_Distributor_2
+Qmis_Manufaktur_1
+Qmis_Manufaktur_2
+Qmis_Sekunder_1
+Qmis_Sekunder_2
+Qmis_Sekunder_3
+Qmis_Sekunder_4
+Qpij_Konsumen_1
+Qpij_Konsumen_2
+Qpij_Konsumen_3
+Qpij_Konsumen_4
+Qpij_Manufaktur_1
+Qpij_Manufaktur_2
+Rkl_Konsumen_1
+Rkl_Konsumen_2
+Rkl_Konsumen_3
+Rkl_Konsumen_4
 jumlah_produk_remanufaktur_Manufaktur_1
 jumlah_produk_remanufaktur_Manufaktur_2
-jumlah_produk_yang_diproduksi_Manufaktur_1
-jumlah_produk_yang_diproduksi_Manufaktur_2
 konsumen_to_collector_Collector_1
 konsumen_to_collector_Collector_2
+penawaran_diskon_Manufaktur_1
+penawaran_diskon_Manufaktur_2
 produk_dibuang_Disposer_1
 produk_dibuang_Disposer_2
-produk_ke_pusat_pengumpulan_Collector_1
-produk_ke_pusat_pengumpulan_Collector_2
-produk_to_konsum_Konsumen_1
-produk_to_konsum_Konsumen_2
-produk_to_konsum_Konsumen_3
-produk_to_konsum_Konsumen_4
+produk_ke_pusat_pengumpulan_Sekunder_1
+produk_ke_pusat_pengumpulan_Sekunder_2
+produk_ke_pusat_pengumpulan_Sekunder_3
+produk_ke_pusat_pengumpulan_Sekunder_4
 End
