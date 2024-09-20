@@ -2,10 +2,11 @@ import pulp as lp
 import math
 # PARAMETER
 Cvl = {             #Trailer Capacity
-    "i1 ke j1" : 23,
-    "i1 ke j2" : 25,
-    "i2 ke j1" : 23,
-    "i2 ke j2" : 25,
+
+    "Manufaktur 1" : 23,
+    "Manufaktur 2" : 25,
+    # "i2 ke j1" : 23,
+    # "i2 ke j2" : 25,
         }
 
 Cvt = {             #Truck Capacity
@@ -59,10 +60,10 @@ Cvt = {             #Truck Capacity
 
 Cdv = { # Asumsi Trailer Petrol dan Truck Petrol
     "ij" : {
-        "i1 ke j1" : 4,
-        "i1 ke j2" : 5,
-        "i2 ke j1" : 4,
-        "i2 ke j2" : 5,
+        "Manufaktur 1" : 4,
+        "Manufaktur 2" : 5,
+        # "i2 ke j1" : 4,
+        # "i2 ke j2" : 5,
     },
 
     "jk" : {
