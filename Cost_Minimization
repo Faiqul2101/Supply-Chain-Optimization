@@ -2,42 +2,43 @@
 Minimize
 OBJ: 12.6 Qpij_Manufaktur_1 + 12.8 Qpij_Manufaktur_2
 Subject To
-_C1: Qpij_Manuf_1_M1_ke_D1 + Qpij_Manuf_1_M1_ke_D2 - Qpij_Manufaktur_1 = 0
-_C10: Qpij_Manufaktur_1 <= 235
-_C11: Qpij_Manufaktur_2 <= 250
-_C12: Qpij_Manuf_1_M1_ke_D1 + Qpij_Manuf_2_M2_ke_D1 <= 350
-_C13: Qpij_Manuf_1_M1_ke_D2 + Qpij_Manuf_2_M2_ke_D2 <= 275
-_C14: - Qdjk_Distributor_1 + Qpij_Manuf_1_M1_ke_D1 + Qpij_Manuf_2_M2_ke_D1 = 0
-_C15: - Qdjk_Distributor_2 + Qpij_Manuf_1_M1_ke_D2 + Qpij_Manuf_2_M2_ke_D2 = 0
-_C16: Qdjk_Distributor_1_D1_ke_K1 + Qdjk_Distributor_2_D2_ke_K1 = 100
-_C17: Qdjk_Distributor_1_D1_ke_K2 + Qdjk_Distributor_2_D2_ke_K2 = 110
-_C18: Qdjk_Distributor_1_D1_ke_K3 + Qdjk_Distributor_2_D2_ke_K3 = 120
-_C19: Qdjk_Distributor_1_D1_ke_K4 + Qdjk_Distributor_2_D2_ke_K4 = 130
-_C2: Qpij_Manuf_2_M2_ke_D1 + Qpij_Manuf_2_M2_ke_D2 - Qpij_Manufaktur_2 = 0
-_C20: - Qdjk_Distributor_1 + Qdjk_Distributor_1_D1_ke_K1
+_C1: Qpij_Manufaktur_1 + Qpij_Manufaktur_2 >= 460
+_C10: Qdjk_Distributor_2 <= 275
+_C11: - Qdjk_Distributor_1 + Qdjk_Distributor_1_D1_ke_K1
  + Qdjk_Distributor_1_D1_ke_K2 + Qdjk_Distributor_1_D1_ke_K3
  + Qdjk_Distributor_1_D1_ke_K4 <= 0
-_C21: - Qdjk_Distributor_2 + Qdjk_Distributor_2_D2_ke_K1
+_C12: - Qdjk_Distributor_2 + Qdjk_Distributor_2_D2_ke_K1
  + Qdjk_Distributor_2_D2_ke_K2 + Qdjk_Distributor_2_D2_ke_K3
  + Qdjk_Distributor_2_D2_ke_K4 <= 0
-_C22: Rkl_Collector_1 + Rkl_Collector_2 <= 165
-_C23: Qwsl_Sekunder_1 + Qwsl_Sekunder_2 + Qwsl_Sekunder_3 + Qwsl_Sekunder_4
+_C13: Qdjk_Distributor_1_D1_ke_K1 + Qdjk_Distributor_2_D2_ke_K1 = 100
+_C14: Qdjk_Distributor_1_D1_ke_K2 + Qdjk_Distributor_2_D2_ke_K2 = 110
+_C15: Qdjk_Distributor_1_D1_ke_K3 + Qdjk_Distributor_2_D2_ke_K3 = 120
+_C16: Qdjk_Distributor_1_D1_ke_K4 + Qdjk_Distributor_2_D2_ke_K4 = 130
+_C17: - Rkl_Konsumen_1 <= 0
+_C18: 0.172296820582 Qdjk_Distributor_1_D1_ke_K2
+ + 0.172296820582 Qdjk_Distributor_2_D2_ke_K2 - Rkl_Konsumen_2 <= 0
+_C19: 0.357847242747 Qdjk_Distributor_1_D1_ke_K3
+ + 0.357847242747 Qdjk_Distributor_2_D2_ke_K3 - Rkl_Konsumen_3 <= 0
+_C2: Qmis_Manufaktur_1 + Qmis_Manufaktur_2 >= 155
+_C20: 0.546711065308 Qdjk_Distributor_1_D1_ke_K4
+ + 0.546711065308 Qdjk_Distributor_2_D2_ke_K4 - Rkl_Konsumen_4 <= 0
+_C21: Rkl_K1_ke_C1 + Rkl_K1_ke_C2 - Rkl_Konsumen_1 = 0
+_C22: Rkl_K2_ke_C1 + Rkl_K2_ke_C2 - Rkl_Konsumen_2 = 0
+_C23: Rkl_K3_ke_C1 + Rkl_K3_ke_C2 - Rkl_Konsumen_3 = 0
+_C24: Rkl_K4_ke_C1 + Rkl_K4_ke_C2 - Rkl_Konsumen_4 = 0
+_C25: Rkl_K1_ke_C1 + Rkl_K2_ke_C1 + Rkl_K3_ke_C1 + Rkl_K4_ke_C1 <= 70
+_C26: Rkl_K1_ke_C2 + Rkl_K2_ke_C2 + Rkl_K3_ke_C2 + Rkl_K4_ke_C2 <= 95
+_C27: Qwsl_Sekunder_1 + Qwsl_Sekunder_2 + Qwsl_Sekunder_3 + Qwsl_Sekunder_4
  <= 160
-_C24: Qrli_Manufaktur_1 + Qrli_Manufaktur_2 <= 180
-_C25: Qslm_Disposer_1 + Qslm_Disposer_2 <= 180
-_C3: Qpij_Manufaktur_1 + Qpij_Manufaktur_2 >= 460
-_C4: Qmis_Manufaktur_1 + Qmis_Manufaktur_2 >= 155
-_C5: Qdjk_Distributor_1 + Qdjk_Distributor_2 - Qpij_Manufaktur_1
- - Qpij_Manufaktur_2 <= 0
-_C6: Qrli_Manufaktur_1 + Qrli_Manufaktur_2 - 0.5 Rkl_Konsumen_1
- - 0.5 Rkl_Konsumen_2 - 0.5 Rkl_Konsumen_3 - 0.5 Rkl_Konsumen_4 <= 0
-_C7: Qslm_Disposer_1 + Qslm_Disposer_2 - Qwsl_Sekunder_1 - Qwsl_Sekunder_2
- - Qwsl_Sekunder_3 - Qwsl_Sekunder_4 - 0.5 Rkl_Konsumen_1 - 0.5 Rkl_Konsumen_2
- - 0.5 Rkl_Konsumen_3 - 0.5 Rkl_Konsumen_4 = 0
-_C8: - Qpij_Manufaktur_1 - Qpij_Manufaktur_2 + Qrli_Manufaktur_1
- + Qrli_Manufaktur_2 <= 0
-_C9: Qmis_Manufaktur_1 + Qmis_Manufaktur_2 - Qrli_Manufaktur_1
- - Qrli_Manufaktur_2 <= 0
+_C28: Qrli_Manufaktur_1 + Qrli_Manufaktur_2 <= 180
+_C29: Qslm_Disposer_1 + Qslm_Disposer_2 <= 180
+_C3: Qpij_Manuf_1_M1_ke_D1 + Qpij_Manuf_1_M1_ke_D2 - Qpij_Manufaktur_1 = 0
+_C4: Qpij_Manuf_2_M2_ke_D1 + Qpij_Manuf_2_M2_ke_D2 - Qpij_Manufaktur_2 = 0
+_C5: Qpij_Manufaktur_1 <= 235
+_C6: Qpij_Manufaktur_2 <= 250
+_C7: - Qdjk_Distributor_1 + Qpij_Manuf_1_M1_ke_D1 + Qpij_Manuf_2_M2_ke_D1 = 0
+_C8: - Qdjk_Distributor_2 + Qpij_Manuf_1_M1_ke_D2 + Qpij_Manuf_2_M2_ke_D2 = 0
+_C9: Qdjk_Distributor_1 <= 350
 Bounds
  0 <= Qdjk_Distributor_1
  0 <= Qdjk_Distributor_1_D1_ke_K1
@@ -65,8 +66,14 @@ Bounds
  0 <= Qwsl_Sekunder_2
  0 <= Qwsl_Sekunder_3
  0 <= Qwsl_Sekunder_4
- 0 <= Rkl_Collector_1
- 0 <= Rkl_Collector_2
+ 0 <= Rkl_K1_ke_C1
+ 0 <= Rkl_K1_ke_C2
+ 0 <= Rkl_K2_ke_C1
+ 0 <= Rkl_K2_ke_C2
+ 0 <= Rkl_K3_ke_C1
+ 0 <= Rkl_K3_ke_C2
+ 0 <= Rkl_K4_ke_C1
+ 0 <= Rkl_K4_ke_C2
  0 <= Rkl_Konsumen_1
  0 <= Rkl_Konsumen_2
  0 <= Rkl_Konsumen_3
@@ -98,8 +105,14 @@ Qwsl_Sekunder_1
 Qwsl_Sekunder_2
 Qwsl_Sekunder_3
 Qwsl_Sekunder_4
-Rkl_Collector_1
-Rkl_Collector_2
+Rkl_K1_ke_C1
+Rkl_K1_ke_C2
+Rkl_K2_ke_C1
+Rkl_K2_ke_C2
+Rkl_K3_ke_C1
+Rkl_K3_ke_C2
+Rkl_K4_ke_C1
+Rkl_K4_ke_C2
 Rkl_Konsumen_1
 Rkl_Konsumen_2
 Rkl_Konsumen_3
