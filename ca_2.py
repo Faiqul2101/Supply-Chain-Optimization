@@ -329,6 +329,8 @@ dummy3 = ["D1 ke K1", "D1 ke K2", "D1 ke K3", "D1 ke K4"]
 dummy4 = ["D2 ke K1", "D2 ke K2", "D2 ke K3", "D2 ke K4"]
 dummy5 = ["K1 ke C1", "K2 ke C1", "K3 ke C1", "K4 ke C1"]
 dummy6 = ["K1 ke C2", "K2 ke C2", "K3 ke C2", "K4 ke C2"]
+dummy7 = ["Konversi_C1 ke M1", "Konversi_C1 ke M2"]
+dummy8 = ["Konversi_C2 ke M1", "Konversi_C2 ke M2"]
 
 # Kumpulan Keys
 manuf_keys = PCi.keys()
@@ -378,8 +380,11 @@ Pre = lp.LpVariable.dicts("Pre", manuf_keys, 0,None,cat=lp.LpInteger)
 QPij = lp.LpVariable.dicts("Qpij", manuf_keys, 0,None,cat=lp.LpInteger)
 QPij1 = lp.LpVariable.dicts("Qpij Manuf 1", dummy, 0,None,cat=lp.LpInteger)
 QPij2 = lp.LpVariable.dicts("Qpij Manuf 2", dummy2, 0,None,cat=lp.LpInteger)
-Qrli = lp.LpVariable.dicts("Qrli", manuf_keys, 0,None,cat=lp.LpInteger)
 GLti = lp.LpVariable.dicts("GLti", manuf_keys, 0, 1,cat=lp.LpInteger)
+
+Qrli = lp.LpVariable.dicts("Qrli", manuf_keys, 0,None,cat=lp.LpInteger)
+Qrli1 = lp.LpVariable.dict("Qrli Collector 1", dummy7,0, None, cat=lp.LpInteger)
+Qrli2 = lp.LpVariable.dict("Qrli Collector 2", dummy8,0, None, cat=lp.LpInteger)
 
 # Variabel Distributor
 # Qdjk = lp.LpVariable.dicts("Qdjk",konsumen_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
@@ -407,6 +412,7 @@ Vm = lp.LpVariable.dicts("vm", disposer_keys, 0,1,cat=lp.LpBinary)
 Qslm =  lp.LpVariable.dicts("Qslm",disposer_keys,lowBound=0,upBound=None,cat=lp.LpInteger)
 
 # KALKULASI BIAYA
+# ...
 
 # FUNGSI TUJUAN
 problem += lp.lpSum((PCi[item]+Beta[item]) * QPij[item] for item in manuf_keys ) 
@@ -415,27 +421,10 @@ rumus3 = lp.lpSum(Cdv['ij'][item]*QPij1[item]*(1/Cvl[item])*d["ij"][item] for it
 print("Tes rumus",rumus3)
 
 # Constraint
-#Qdjk <= Qpij 
-# problem += lp.lpSum(Qdjk[item1] for item1 in distributor_keys) <= lp.lpSum(QPij[item2] for item2 in manuf_keys)
-
-#QRli <= (1-Fd) Rkl
-# problem += lp.lpSum(Qrli[item1] for item1 in manuf_keys) <= (1-0.5) * lp.lpSum(Rkl1[item2] for item2 in konsumen_keys)
-
-#QSlm == Fd Rkl + Qwsl
-# problem += lp.lpSum(Qslm[item1] for item1 in disposer_keys) == 0.5 * lp.lpSum(Rkl1[item2] for item2 in konsumen_keys) + lp.lpSum(Qwsl1[item3] for item3 in sekunder_keys )
-
-#QRli <= Qpij
-# problem += lp.lpSum(Qrli[item1] for item1 in manuf_keys) <= lp.lpSum(QPij[item2] for item2 in manuf_keys)
-
-#Qmis <= Qrli
-# problem += lp.lpSum(Qmis1[item1] for item1 in manuf_keys) <= lp.lpSum(Qrli[item2] for item2 in manuf_keys)
-
+#1. QPij
 #QPij >= Dk --> Aman
 problem += lp.lpSum(QPij[item1] for item1 in manuf_keys) >= lp.lpSum(Dk[item2] for item2 in konsumen_keys)
 
-#Qmis >= Ds --> Aman
-problem += lp.lpSum(Qmis1[item1] for item1 in manuf_keys) >= lp.lpSum(Ds[item2] for item2 in sekunder_keys)
-                
 #QPij1 = QPij[Manufaktur1] --> Aman
 problem += lp.lpSum(QPij1[item] for item in dummy) == QPij["Manufaktur 1"]
 
@@ -446,7 +435,7 @@ problem += lp.lpSum(QPij2[item] for item in dummy2) == QPij["Manufaktur 2"]
 for item in manuf_keys :
     problem += QPij[item] <= Cppi[item]
 
-#Qdjk --> Aman
+#2. Qdjk
 #QPij1 + QPij2 == Qdjk --> Aman
 #Konversi QPij1 dan QPij2 ke Qdjk1 Distributor 1 dan Distributor 2 --> Aman
 problem += QPij1["M1 ke D1"] + QPij2["M2 ke D1"] == Qdjk["Distributor 1"]
@@ -456,64 +445,85 @@ problem += QPij1["M1 ke D2"] + QPij2["M2 ke D2"] == Qdjk["Distributor 2"]
 for item in distributor_keys :
     problem += Qdjk[item] <= Cpdj[item]
     
-#Memastikan jumlah yang dikirim ke Konsumen 1,2,3,4 == Jumlah barang yg ada di Distributor 1 atau 2
+#Memastikan jumlah yang dikirim ke Konsumen 1,2,3,4 == Jumlah barang yg ada di Distributor 1 atau 2 --> Aman
 problem += lp.lpSum(Qdjk1[item] for item in dummy3) <= Qdjk["Distributor 1"]
 problem += lp.lpSum(Qdjk2[item] for item in dummy4) <= Qdjk["Distributor 2"]
     
-# #Memastikan Barang yang dikirim D1 dan D2 tidak melebihi permintaan konsumen 1, 2, 3, 4
+# #Memastikan Barang yang dikirim D1 dan D2 tidak melebihi permintaan konsumen 1, 2, 3, 4 --> Aman
 problem += Qdjk1["D1 ke K1"] + Qdjk2["D2 ke K1"] == Dk["Konsumen 1"]
 problem += Qdjk1["D1 ke K2"] + Qdjk2["D2 ke K2"] == Dk["Konsumen 2"]
 problem += Qdjk1["D1 ke K3"] + Qdjk2["D2 ke K3"] == Dk["Konsumen 3"]
 problem += Qdjk1["D1 ke K4"] + Qdjk2["D2 ke K4"] == Dk["Konsumen 4"]
 
-#Rkl <= Yk QDjk GLti
-#Konversi dari Qdjk Konsumen 1 ke Rkl Konsumen 1, Qdjk Konsumen 2 ke Rkl Konsumen 2, dst
+#3. Rkl
+#Rkl <= Yk QDjk GLti --> Aman
+#Konversi dari Qdjk Konsumen 1 ke Rkl Konsumen 1, Qdjk Konsumen 2 ke Rkl Konsumen 2, dst --> Aman
 problem += proporsi_pengembalian["Konsumen 1"] * (Qdjk1["D1 ke K1"] + Qdjk2["D2 ke K1"]) <= Rkl_Konsumen["Konsumen 1"]
 problem += proporsi_pengembalian["Konsumen 2"] * (Qdjk1["D1 ke K2"] + Qdjk2["D2 ke K2"]) <= Rkl_Konsumen["Konsumen 2"]
 problem += proporsi_pengembalian["Konsumen 3"] * (Qdjk1["D1 ke K3"] + Qdjk2["D2 ke K3"]) <= Rkl_Konsumen["Konsumen 3"]
 problem += proporsi_pengembalian["Konsumen 4"] * (Qdjk1["D1 ke K4"] + Qdjk2["D2 ke K4"]) <= Rkl_Konsumen["Konsumen 4"]
 
-#Konversi Rkl Konsumen ke Rkl1 dan Rkl2 (Untuk Pengiriman)
+#Konversi Rkl Konsumen ke Rkl1 dan Rkl2 (Untuk Pengiriman) --> Aman
 problem += Rkl1["K1 ke C1"] + Rkl2["K1 ke C2"] == Rkl_Konsumen["Konsumen 1"]
 problem += Rkl1["K2 ke C1"] + Rkl2["K2 ke C2"] == Rkl_Konsumen["Konsumen 2"]
 problem += Rkl1["K3 ke C1"] + Rkl2["K3 ke C2"] == Rkl_Konsumen["Konsumen 3"]
-problem += Rkl1["K4 ke C1"] + Rkl2["K4 ke C2"] == Rkl_Konsumen["Konsumen 4"] #--> Masih berusaha memaksimalkan kapasitas collector 2
+problem += Rkl1["K4 ke C1"] + Rkl2["K4 ke C2"] == Rkl_Konsumen["Konsumen 4"]
 
-#Konversi Rkl1 ke Rkl Collector 1 dan Rkl2 ke Rkl Collector 2
+#Konversi Rkl1 ke Rkl Collector 1 dan Rkl2 ke Rkl Collector 2 --> Aman
 problem += lp.lpSum(Rkl1[item] for item in dummy5) == Rkl["Collector 1"]
 problem += lp.lpSum(Rkl2[item] for item in dummy6) == Rkl["Collector 2"]
 
-#Rkl <= ul Cccl --> Problem : Rkl Konsumen 4 menyesuaikan Kebutuhan Maksimasi Kapasitas Pengumpulan
-#Memastikan jumlah yang diterima dari konsumen 1,2,3,4 memenuhi kapasitas Collector 1,2
+#Rkl <= ul Cccl --> Problem : Rkl Konsumen 4 menyesuaikan Kebutuhan Maksimasi Kapasitas Pengumpulan --> Aman
+#Memastikan jumlah yang diterima dari konsumen 1,2,3,4 memenuhi kapasitas Collector 1,2 --> Aman
 problem += lp.lpSum(Rkl1[item] for item in dummy5) <= Cccl["Collector 1"]
 problem += lp.lpSum(Rkl2[item] for item in dummy6) <= Cccl["Collector 2"]
 
-#Memastikan Total Jumlah yang dikirimkan oleh Konsumen = Total Jumlah yang diterima oleh Collector
+#Memastikan Total Jumlah yang dikirimkan oleh Konsumen = Total Jumlah yang diterima oleh Collector --> Aman
 problem += lp.lpSum(Rkl1[item] for item in dummy5) + lp.lpSum(Rkl2[item] for item in dummy6) <= Cccl["Collector 1"] + Cccl["Collector 2"]
 
+#4. Qrli
+#Memastikan Qrli yang dikirim ke M1 dan M2 == Rkl yang ada di C1 atau C2
+problem += Rkl["Collector 1"] == 0.5 * (Qrli1["Konversi_C1 ke M1"] + Qrli1["Konversi_C1 ke M2"])
+problem += Rkl["Collector 2"] == 0.5 * (Qrli2["Konversi_C2 ke M1"] + Qrli2["Konversi_C2 ke M2"])
+
+#QRli <= (1-Fd) Rkl
+#Memastikan Qrli merupakan proporsi dari Rkl
+problem += Qrli["Manufaktur 1"] == (1-0.5) * (Qrli1["Konversi_C1 ke M1"] + Qrli2["Konversi_C2 ke M1"])
+problem += Qrli["Manufaktur 2"] == (1-0.5) * (Qrli1["Konversi_C1 ke M2"] + Qrli2["Konversi_C2 ke M2"])
+
+#QRli <= Qpij
+problem += lp.lpSum(Qrli[item1] for item1 in manuf_keys) <= lp.lpSum(QPij[item2] for item2 in manuf_keys)
+
+#Qrli <= Cri
+for item in manuf_keys :
+    problem += Qrli[item] <= Cri[item]
+
+#5. Qmis
+#Qmis <= Qrli
+#problem += lp.lpSum(Qmis1[item1] for item1 in manuf_keys) <= lp.lpSum(Qrli[item2] for item2 in manuf_keys)
+
+#Qmis >= Ds --> Aman
+problem += lp.lpSum(Qmis1[item1] for item1 in manuf_keys) >= lp.lpSum(Ds[item2] for item2 in sekunder_keys)
+
+#6. Qwsl
 #Qwsl <= ul Csrl 
 problem += lp.lpSum(Qwsl1[item]for item in sekunder_keys) <= lp.lpSum(Csr[item1]for item1 in sekunder_keys)
-                
-#Qrli <= Cri
-problem += lp.lpSum(Qrli[item] for item in manuf_keys) <= lp.lpSum(Cri[item1] for item1 in manuf_keys)
+
+#7. Qslm
+#QSlm == Fd Rkl + Qwsl
+# problem += lp.lpSum(Qslm[item1] for item1 in disposer_keys) == 0.5 * lp.lpSum(Rkl1[item2] for item2 in konsumen_keys) + lp.lpSum(Qwsl1[item3] for item3 in sekunder_keys )
 
 #Qslm <= vm Ccdm
 problem += lp.lpSum(Qslm[item] for item in disposer_keys) <= lp.lpSum(Ccdm[item1] for item1 in disposer_keys)
 
-#Pd <= Pngi
-# problem += lp.lpSum(Pd[item] for item in manuf_keys) <= lp.lpSum(Pngi[item2] for item2 in manuf_keys)
-
-print(problem)
 problem.writeLP("Cost_Minimization")
 problem.solve()
 print("Status:", lp.LpStatus[problem.status])
 
 status = problem.solve(lp.PULP_CBC_CMD(msg=0))
 print(lp.LpStatus[status])
-
 print(problem)
 
 for v in problem.variables():
     print(v.name, "=", v.varValue)
-
 print("Total Biaya =", lp.value(problem.objective))
