@@ -479,10 +479,17 @@ problem += Rkl1["K2 ke C1"] + Rkl2["K2 ke C2"] == Rkl_Konsumen["Konsumen 2"]
 problem += Rkl1["K3 ke C1"] + Rkl2["K3 ke C2"] == Rkl_Konsumen["Konsumen 3"]
 problem += Rkl1["K4 ke C1"] + Rkl2["K4 ke C2"] == Rkl_Konsumen["Konsumen 4"] #--> Masih berusaha memaksimalkan kapasitas collector 2
 
+#Konversi Rkl1 ke Rkl Collector 1 dan Rkl2 ke Rkl Collector 2
+problem += lp.lpSum(Rkl1[item] for item in dummy5) == Rkl["Collector 1"]
+problem += lp.lpSum(Rkl2[item] for item in dummy6) == Rkl["Collector 2"]
+
 #Rkl <= ul Cccl --> Problem : Rkl Konsumen 4 menyesuaikan Kebutuhan Maksimasi Kapasitas Pengumpulan
 #Memastikan jumlah yang diterima dari konsumen 1,2,3,4 memenuhi kapasitas Collector 1,2
 problem += lp.lpSum(Rkl1[item] for item in dummy5) <= Cccl["Collector 1"]
 problem += lp.lpSum(Rkl2[item] for item in dummy6) <= Cccl["Collector 2"]
+
+#Memastikan Total Jumlah yang dikirimkan oleh Konsumen = Total Jumlah yang diterima oleh Collector
+problem += lp.lpSum(Rkl1[item] for item in dummy5) + lp.lpSum(Rkl2[item] for item in dummy6) <= Cccl["Collector 1"] + Cccl["Collector 2"]
 
 #Qwsl <= ul Csrl 
 problem += lp.lpSum(Qwsl1[item]for item in sekunder_keys) <= lp.lpSum(Csr[item1]for item1 in sekunder_keys)
