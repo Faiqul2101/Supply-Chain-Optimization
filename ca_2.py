@@ -381,7 +381,7 @@ QPij = lp.LpVariable.dicts("Qpij", manuf_keys, 0,None,cat=lp.LpInteger)
 QPij1 = lp.LpVariable.dicts("Qpij Manuf 1", dummy, 0,None,cat=lp.LpInteger)
 QPij2 = lp.LpVariable.dicts("Qpij Manuf 2", dummy2, 0,None,cat=lp.LpInteger)
 GLti = lp.LpVariable.dicts("GLti", manuf_keys, 0, 1,cat=lp.LpInteger)
-
+ 
 Qrli = lp.LpVariable.dicts("Qrli", manuf_keys, 0,None,cat=lp.LpInteger)
 Qrli1 = lp.LpVariable.dict("Qrli Collector 1", dummy7,0, None, cat=lp.LpInteger)
 Qrli2 = lp.LpVariable.dict("Qrli Collector 2", dummy8,0, None, cat=lp.LpInteger)
@@ -417,8 +417,10 @@ Qslm =  lp.LpVariable.dicts("Qslm",disposer_keys,lowBound=0,upBound=None,cat=lp.
 # FUNGSI TUJUAN
 problem += lp.lpSum((PCi[item]+Beta[item]) * QPij[item] for item in manuf_keys ) 
 rumus3 = lp.lpSum(Cdv['ij'][item]*QPij1[item]*(1/Cvl[item])*d["ij"][item] for item in dummy) + lp.lpSum(Cdv['ij'][item]*QPij2[item]*(1/Cvl[item])*d["ij"][item] for item in dummy2)
-
+rumus4 = lp.lpSum(Pd[x] * dd[item]* Qrli[item] for item in manuf_keys for x in konsumen_keys)
 print("Tes rumus",rumus3)
+print("Tes rumus1",rumus4)
+
 
 # Constraint
 #1. QPij
