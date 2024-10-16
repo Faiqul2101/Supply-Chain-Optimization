@@ -417,9 +417,19 @@ Qslm =  lp.LpVariable.dicts("Qslm",disposer_keys,lowBound=0,upBound=None,cat=lp.
 # FUNGSI TUJUAN
 problem += lp.lpSum((PCi[item]+Beta[item]) * QPij[item] for item in manuf_keys ) 
 rumus3 = lp.lpSum(Cdv['ij'][item]*QPij1[item]*(1/Cvl[item])*d["ij"][item] for item in dummy) + lp.lpSum(Cdv['ij'][item]*QPij2[item]*(1/Cvl[item])*d["ij"][item] for item in dummy2)
-rumus4 = lp.lpSum(Pd[x] * dd[item]* Qrli[item] for item in manuf_keys for x in konsumen_keys)
-print("Tes rumus",rumus3)
-print("Tes rumus1",rumus4)
+# rumus4 = lp.lpSum(Pd[x] * dd[item]* Qrli[item] for item in manuf_keys for x in konsumen_keys)
+rumus5 = lp.lpSum(Coj["Distributor 1"]*Qdjk1[item] for item in dummy3) + lp.lpSum(Coj['Distributor 2']*Qdjk2[item] for item in dummy4)
+# Rumus 5
+listrumus6 = []
+for item in konsumen_keys:
+    x = (Cdv['jk'][item]*d["jk"][item])/Cvt["jk"][item]
+    listrumus6.append(x)
+print("cobalist", listrumus6)
+
+rumus6 = sum(Qdjk1[item] * listrumus6[x] for x, item in enumerate(dummy3)) + sum(Qdjk2[item] * listrumus6[x] for x, item in enumerate(dummy4))
+print("Tes rumus3",rumus3)
+print("Tes rumus5",rumus5)
+print("Tes rumus6",rumus6)
 
 
 # Constraint
